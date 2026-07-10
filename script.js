@@ -13,7 +13,7 @@ const micStatusLabel = document.getElementById('micStatusLabel');
 const statusDot      = document.querySelector('.status-dot');
 const statusTxt      = document.querySelector('.status-text');
 const speechBubble   = document.getElementById('speechBubble');
-const boyChar        = document.getElementById('boyCharacter');
+const characters     = [...document.querySelectorAll('.char-wrapper')];
 const micWave        = document.getElementById('micWaveContainer');
 const cmdBtns        = document.querySelectorAll('.btn-command');
 const overlay        = document.getElementById('startOverlay');
@@ -21,15 +21,6 @@ const btnOverlay     = document.getElementById('btnStartOverlay');
 const txBox          = document.getElementById('transcriptBox');
 const txText         = document.getElementById('transcriptText');
 
-// SVG face parts
-const mouthNormal = document.getElementById('mouthNormal');
-const mouthLaugh  = document.getElementById('mouthLaugh');
-const mouthCry    = document.getElementById('mouthCry');
-const mouthOpen   = document.getElementById('mouthOpen');
-const normalEyes  = document.getElementById('normalEyes');
-const happyEyes   = document.getElementById('happyEyes');
-const cryingEyes  = document.getElementById('cryingEyes');
-const teardrops   = document.getElementById('teardrops');
 
 // ─── AUDIO INIT ───────────────────────────────────────────
 function initAudio() {
@@ -164,31 +155,21 @@ const phrases = {
 };
 
 function updateFace(state) {
-    mouthNormal.style.display = 'block';
-    mouthLaugh.style.display  = 'none';
-    mouthCry.style.display    = 'none';
-    mouthOpen.style.display   = 'none';
-    normalEyes.style.display  = 'block';
-    happyEyes.style.display   = 'none';
-    cryingEyes.style.display  = 'none';
-    teardrops.style.display   = 'none';
-
-    if (state === 'gul') {
-        mouthNormal.style.display = 'none'; mouthLaugh.style.display = 'block';
-        normalEyes.style.display  = 'none'; happyEyes.style.display  = 'block';
-    } else if (state === 'agla') {
-        mouthNormal.style.display = 'none'; mouthCry.style.display   = 'block';
-        normalEyes.style.display  = 'none'; cryingEyes.style.display = 'block';
-        teardrops.style.display   = 'block';
-    } else if (state === 'agiz-ac') {
-        mouthNormal.style.display = 'none'; mouthOpen.style.display  = 'block';
-    }
+    // Every SVG has the same face-part class names, so one state updates the
+    // entire group without relying on duplicate SVG IDs.
+    characters.forEach(character => {
+        character.classList.toggle('face-happy', state === 'gul');
+        character.classList.toggle('face-crying', state === 'agla');
+        character.classList.toggle('face-open', state === 'agiz-ac');
+    });
 }
 
 let resetTimer = null;
 
 function resetToIdle() {
-    boyChar.className.baseVal = '';
+    characters.forEach(character => {
+        character.className = 'char-wrapper';
+    });
     updateFace('idle');
     cmdBtns.forEach(b => b.classList.remove('active-command'));
     speechBubble.textContent = 'Növbəti əmrini gözləyirəm! 😊';
@@ -209,9 +190,11 @@ function triggerAction(name) {
     void speechBubble.offsetWidth;
     speechBubble.style.animation = 'bubbleBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
 
-    // SVG state class
-    boyChar.className.baseVal = '';
-    if (name !== 'dur') boyChar.classList.add('state-' + name);
+    // Apply the command to all four friends in the same animation frame.
+    characters.forEach(character => {
+        character.className = 'char-wrapper';
+        if (name !== 'dur') character.classList.add('state-' + name);
+    });
     updateFace(name);
 
     // Sound
@@ -450,4 +433,3 @@ window.addEventListener('DOMContentLoaded', () => {
     recognition = buildRecognition(langIndex);
     if (recognition) attachHandlers();
 });
-

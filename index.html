@@ -3,479 +3,582 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Şirin Dostum - Səsli Uşaq Oyunu</title>
-    <!-- Google Fonts -->
+    <title>Şirin Dostlarım – Səsli Uşaq Oyunu</title>
+    <meta name="description" content="Azərbaycan dilində əmrlər verin, sevimli uşaq xarakterləri hərəkət etsin!">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- App stylesheets -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="character.css">
 </head>
 <body>
-    <!-- Full-Screen Start Overlay (shown on load, tap triggers mic permission) -->
-    <div class="start-overlay" id="startOverlay">
-        <div class="start-overlay-card">
-            <div class="overlay-character">🧒</div>
-            <h2>Şirin Dostum</h2>
-            <p>Mən dediyiniz əmrləri yerinə yetirəcəyəm!</p>
-            <button class="btn-start-overlay" id="btnStartOverlay">
-                <i class="fa-solid fa-microphone"></i>
-                Başlamaq üçün toxun!
-            </button>
-            <p class="overlay-hint">Mikrofona icazə verin, sonra əmrləri deyin</p>
+
+<!-- ═══ START OVERLAY ═════════════════════════════════════════ -->
+<div class="start-overlay" id="startOverlay">
+    <div class="start-card">
+        <div class="overlay-chars">🧒👧🧒👧</div>
+        <h2>Şirin Dostlarım</h2>
+        <p>Azərbaycan dilində əmr verin — dostlar hərəkət etsin!</p>
+        <button class="btn-start-overlay" id="btnStartOverlay">
+            <i class="fa-solid fa-microphone"></i>
+            Başlamaq üçün toxun!
+        </button>
+        <p class="overlay-hint">Mikrofona icazə verin, sonra əmrləri deyin</p>
+    </div>
+</div>
+
+<div class="app-container">
+
+    <!-- ═══ HEADER ════════════════════════════════════════════ -->
+    <header class="app-header">
+        <div class="logo">
+            <i class="fa-solid fa-children logo-icon"></i>
+            <h1>Şirin Dostlarım</h1>
+        </div>
+        <div class="status-indicator" id="statusIndicator">
+            <span class="status-dot"></span>
+            <span class="status-text">Hazırdır</span>
+        </div>
+    </header>
+
+    <!-- ═══ SCENE ══════════════════════════════════════════════ -->
+    <div class="scene-section">
+
+        <!-- Background SVG environment -->
+        <svg class="scene-svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="sc-sky" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#1e88d8"/><stop offset="70%" stop-color="#74cbf0"/><stop offset="100%" stop-color="#c4e8fa"/>
+                </linearGradient>
+                <linearGradient id="sc-ground" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#68c422"/><stop offset="100%" stop-color="#3e8a10"/>
+                </linearGradient>
+                <linearGradient id="sc-hill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#7dda40"/><stop offset="100%" stop-color="#4daa20"/>
+                </linearGradient>
+                <linearGradient id="sc-path" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#caa870"/><stop offset="100%" stop-color="#9a7038"/>
+                </linearGradient>
+                <radialGradient id="sc-sun" cx="40%" cy="35%" r="60%">
+                    <stop offset="0%" stop-color="#fffaaa"/><stop offset="60%" stop-color="#ffd700"/><stop offset="100%" stop-color="#e8a800"/>
+                </radialGradient>
+            </defs>
+
+            <!-- Sky -->
+            <rect width="1200" height="420" fill="url(#sc-sky)"/>
+
+            <!-- Sun -->
+            <circle cx="100" cy="75" r="48" fill="url(#sc-sun)" opacity="0.95"/>
+            <g opacity="0.45" stroke="#ffd700" stroke-width="3.5" stroke-linecap="round">
+                <line x1="100" y1="14" x2="100" y2="3"/><line x1="100" y1="137" x2="100" y2="148"/>
+                <line x1="39" y1="75" x2="28" y2="75"/><line x1="161" y1="75" x2="172" y2="75"/>
+                <line x1="57" y1="33" x2="49" y2="25"/><line x1="143" y1="33" x2="151" y2="25"/>
+                <line x1="57" y1="117" x2="49" y2="125"/><line x1="143" y1="117" x2="151" y2="125"/>
+            </g>
+
+            <!-- Clouds -->
+            <g class="cloud cloud-1">
+                <ellipse cx="340" cy="70" rx="75" ry="33" fill="white" opacity="0.96"/>
+                <ellipse cx="395" cy="56" rx="58" ry="27" fill="white" opacity="0.96"/>
+                <ellipse cx="285" cy="76" rx="52" ry="23" fill="white" opacity="0.96"/>
+            </g>
+            <g class="cloud cloud-2">
+                <ellipse cx="890" cy="54" rx="82" ry="35" fill="white" opacity="0.92"/>
+                <ellipse cx="955" cy="40" rx="65" ry="28" fill="white" opacity="0.92"/>
+                <ellipse cx="835" cy="60" rx="56" ry="25" fill="white" opacity="0.92"/>
+            </g>
+            <g class="cloud cloud-3">
+                <ellipse cx="618" cy="44" rx="62" ry="25" fill="white" opacity="0.88"/>
+                <ellipse cx="668" cy="33" rx="50" ry="21" fill="white" opacity="0.88"/>
+                <ellipse cx="572" cy="50" rx="44" ry="19" fill="white" opacity="0.88"/>
+            </g>
+
+            <!-- Hills -->
+            <ellipse cx="190" cy="358" rx="310" ry="130" fill="url(#sc-hill)" opacity="0.62"/>
+            <ellipse cx="1060" cy="365" rx="330" ry="120" fill="url(#sc-hill)" opacity="0.58"/>
+            <ellipse cx="600" cy="400" rx="420" ry="95" fill="url(#sc-hill)" opacity="0.38"/>
+
+            <!-- Ground base -->
+            <rect x="0" y="355" width="1200" height="65" fill="url(#sc-ground)"/>
+            <rect x="0" y="355" width="1200" height="9" fill="#8ae630" opacity="0.6"/>
+
+            <!-- Stone Path (centre) -->
+            <path d="M390 420 L428 355 L772 355 L810 420 Z" fill="url(#sc-path)" opacity="0.86"/>
+            <line x1="428" y1="355" x2="390" y2="420" stroke="#8a6030" stroke-width="2.5" opacity="0.65"/>
+            <line x1="772" y1="355" x2="810" y2="420" stroke="#8a6030" stroke-width="2.5" opacity="0.65"/>
+            <line x1="600" y1="355" x2="600" y2="420" stroke="#d4aa72" stroke-width="4" stroke-dasharray="20 14" opacity="0.55"/>
+            <ellipse cx="538" cy="384" rx="9" ry="5.5" fill="#b89050" opacity="0.5"/>
+            <ellipse cx="665" cy="398" rx="7" ry="4.5" fill="#b89050" opacity="0.5"/>
+            <ellipse cx="600" cy="412" rx="8" ry="4" fill="#b89050" opacity="0.4"/>
+
+            <!-- Bench (left) -->
+            <rect x="74" y="302" width="10" height="58" rx="3" fill="#6b3410"/>
+            <rect x="160" y="302" width="10" height="58" rx="3" fill="#6b3410"/>
+            <rect x="80" y="296" width="8" height="42" rx="3" fill="#7a3d14"/>
+            <rect x="156" y="296" width="8" height="42" rx="3" fill="#7a3d14"/>
+            <rect x="66" y="292" width="112" height="11" rx="4" fill="#b86224"/>
+            <rect x="66" y="289" width="112" height="5" rx="2" fill="#cc7236"/>
+            <rect x="60" y="330" width="124" height="13" rx="5" fill="#b86224"/>
+            <rect x="60" y="327" width="124" height="6" rx="2.5" fill="#cc7236"/>
+            <rect x="58" y="321" width="18" height="9" rx="3" fill="#8b4513"/>
+            <rect x="168" y="321" width="18" height="9" rx="3" fill="#8b4513"/>
+
+            <!-- Tall tree right -->
+            <rect x="1046" y="250" width="28" height="105" rx="7" fill="#8b4513"/>
+            <rect x="1048" y="250" width="10" height="105" fill="#a0541a" opacity="0.4"/>
+            <ellipse cx="1060" cy="226" rx="66" ry="54" fill="#2d8a2a"/>
+            <ellipse cx="1060" cy="200" rx="53" ry="44" fill="#3daa3a"/>
+            <ellipse cx="1060" cy="179" rx="38" ry="34" fill="#4dc54a"/>
+            <ellipse cx="1042" cy="200" rx="16" ry="24" fill="#66e060" opacity="0.36"/>
+            <ellipse cx="1075" cy="355" rx="46" ry="12" fill="rgba(0,0,0,0.13)"/>
+
+            <!-- Small tree beside bench -->
+            <rect x="18" y="283" width="20" height="74" rx="5" fill="#8b4513"/>
+            <ellipse cx="28" cy="265" rx="45" ry="36" fill="#2d8a2a"/>
+            <ellipse cx="28" cy="246" rx="34" ry="27" fill="#3daa3a"/>
+            <ellipse cx="28" cy="232" rx="24" ry="19" fill="#4dc54a"/>
+            <ellipse cx="18" cy="248" rx="11" ry="15" fill="#66e060" opacity="0.34"/>
+
+            <!-- Medium tree right-centre -->
+            <rect x="948" y="284" width="20" height="74" rx="5" fill="#8b4513"/>
+            <ellipse cx="958" cy="266" rx="43" ry="33" fill="#2d9030"/>
+            <ellipse cx="958" cy="249" rx="33" ry="26" fill="#3daa3a"/>
+            <ellipse cx="958" cy="237" rx="22" ry="18" fill="#5dd85a"/>
+
+            <!-- Flowers -->
+            <circle cx="350" cy="358" r="5.5" fill="#ff9eb5"/><circle cx="350" cy="358" r="2" fill="#ffe"/>
+            <circle cx="870" cy="360" r="5.5" fill="#a8e6cf"/><circle cx="870" cy="360" r="2" fill="white"/>
+            <circle cx="216" cy="358" r="4.5" fill="#ffe566"/><circle cx="216" cy="358" r="1.5" fill="white"/>
+            <circle cx="992" cy="359" r="4.5" fill="#ff9eb5"/><circle cx="992" cy="359" r="1.5" fill="white"/>
+            <circle cx="467" cy="358" r="4" fill="#c8a8ff"/>
+            <circle cx="736" cy="358" r="4" fill="#ffe566"/>
+            <circle cx="1130" cy="360" r="4" fill="#a8e6cf"/>
+            <circle cx="72" cy="360" r="4" fill="#ff9eb5"/>
+
+            <!-- Character ground shadows -->
+            <ellipse cx="195" cy="358" rx="36" ry="9" fill="rgba(0,0,0,0.14)"/>
+            <ellipse cx="430" cy="358" rx="34" ry="9" fill="rgba(0,0,0,0.14)"/>
+            <ellipse cx="695" cy="358" rx="30" ry="8" fill="rgba(0,0,0,0.14)"/>
+            <ellipse cx="930" cy="358" rx="34" ry="9" fill="rgba(0,0,0,0.14)"/>
+        </svg>
+
+        <!-- Shared speech bubble -->
+        <div class="speech-bubble-wrap">
+            <div class="speech-bubble" id="speechBubble">Mənimlə danışmaq üçün mikrofonu aç! 😊</div>
+        </div>
+
+        <!-- ═══ CHARACTERS ═══════════════════════════════════ -->
+        <div class="characters-stage">
+
+            <!-- ── ƏLİ ── -->
+            <div class="char-wrapper" id="char-ali">
+                <svg viewBox="0 0 160 360" class="char-svg" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <radialGradient id="a-sk" cx="35%" cy="30%" r="65%">
+                      <stop offset="0%" stop-color="#fff6f0"/><stop offset="40%" stop-color="#ffdcb8"/>
+                      <stop offset="85%" stop-color="#f5b387"/><stop offset="100%" stop-color="#d48053"/>
+                    </radialGradient>
+                    <linearGradient id="a-vs" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#ff6b7d"/><stop offset="100%" stop-color="#9a101f"/>
+                    </linearGradient>
+                    <linearGradient id="a-hr" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#734e36"/><stop offset="100%" stop-color="#291605"/>
+                    </linearGradient>
+                    <linearGradient id="a-sl" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stop-color="#698cae"/><stop offset="100%" stop-color="#21334d"/>
+                    </linearGradient>
+                    <filter id="a-f"><feDropShadow dx="0" dy="5" stdDeviation="5" flood-opacity="0.18"/></filter>
+                  </defs>
+                  <g class="char-body" filter="url(#a-f)">
+                    <g class="left-arm">
+                      <path d="M52 172 L18 252" stroke="url(#a-sl)" stroke-width="22" stroke-linecap="round"/>
+                      <line x1="44" y1="185" x2="34" y2="200" stroke="#ffb703" stroke-width="22"/>
+                      <line x1="30" y1="205" x2="22" y2="220" stroke="#fb8500" stroke-width="22"/>
+                      <circle cx="14" cy="258" r="13" fill="url(#a-sk)"/>
+                    </g>
+                    <g class="right-arm">
+                      <path d="M108 172 L142 252" stroke="url(#a-sl)" stroke-width="22" stroke-linecap="round"/>
+                      <line x1="116" y1="185" x2="126" y2="200" stroke="#ffb703" stroke-width="22"/>
+                      <line x1="130" y1="205" x2="138" y2="220" stroke="#fb8500" stroke-width="22"/>
+                      <circle cx="146" cy="258" r="13" fill="url(#a-sk)"/>
+                    </g>
+                    <g class="legs">
+                      <rect x="38" y="274" width="32" height="42" rx="6" fill="#5c6b73"/>
+                      <rect x="44" y="310" width="22" height="32" fill="url(#a-sk)"/>
+                      <rect x="43" y="334" width="23" height="10" fill="white"/>
+                      <path d="M30 344 C30 339,63 339,63 344 C63 352,67 355,67 360 L26 360 Z" fill="#e63946"/>
+                      <rect x="25" y="359" width="43" height="5" rx="2" fill="white"/>
+                      <rect x="90" y="274" width="32" height="42" rx="6" fill="#5c6b73"/>
+                      <rect x="96" y="310" width="22" height="32" fill="url(#a-sk)"/>
+                      <rect x="95" y="334" width="23" height="10" fill="white"/>
+                      <path d="M88 344 C88 339,121 339,121 344 C121 352,125 355,125 360 L84 360 Z" fill="#e63946"/>
+                      <rect x="83" y="359" width="43" height="5" rx="2" fill="white"/>
+                    </g>
+                    <path class="torso" d="M40 162 Q80 156 120 162 L116 274 Q80 280 44 274 Z" fill="url(#a-vs)"/>
+                    <line x1="80" y1="174" x2="80" y2="274" stroke="white" stroke-width="3" opacity="0.9"/>
+                    <path d="M50 162 Q80 180 110 162" fill="none" stroke="white" stroke-width="5" stroke-linecap="round"/>
+                    <rect x="68" y="140" width="24" height="24" rx="4" fill="url(#a-sk)"/>
+                    <g class="head">
+                      <circle cx="28" cy="95" r="14" fill="url(#a-sk)"/>
+                      <circle cx="132" cy="95" r="14" fill="url(#a-sk)"/>
+                      <circle cx="80" cy="88" r="58" fill="url(#a-sk)"/>
+                      <path d="M34 58 A58 58 0 0 1 126 58 A66 66 0 0 0 34 58 Z" fill="white" opacity="0.18"/>
+                      <circle cx="32" cy="108" r="14" fill="#ff7a59" opacity="0.22"/>
+                      <circle cx="128" cy="108" r="14" fill="#ff7a59" opacity="0.22"/>
+                      <g class="normal-eyes">
+                        <circle cx="60" cy="82" r="15" fill="white"/><circle cx="60" cy="82" r="10" fill="#2d3142"/><circle cx="56" cy="77" r="4.5" fill="white"/>
+                        <circle cx="100" cy="82" r="15" fill="white"/><circle cx="100" cy="82" r="10" fill="#2d3142"/><circle cx="96" cy="77" r="4.5" fill="white"/>
+                      </g>
+                      <g class="happy-eyes" style="display:none">
+                        <path d="M45 85 Q60 67 75 85" fill="none" stroke="#212529" stroke-width="5.5" stroke-linecap="round"/>
+                        <path d="M85 85 Q100 67 115 85" fill="none" stroke="#212529" stroke-width="5.5" stroke-linecap="round"/>
+                      </g>
+                      <g class="crying-eyes" style="display:none">
+                        <path d="M46 80 Q60 94 74 80" fill="none" stroke="#1d3557" stroke-width="5" stroke-linecap="round"/>
+                        <path d="M86 80 Q100 94 114 80" fill="none" stroke="#1d3557" stroke-width="5" stroke-linecap="round"/>
+                      </g>
+                      <path d="M44 60 Q60 52 76 60" fill="none" stroke="#2a1705" stroke-width="4.5" stroke-linecap="round"/>
+                      <path d="M84 60 Q100 52 116 60" fill="none" stroke="#2a1705" stroke-width="4.5" stroke-linecap="round"/>
+                      <ellipse cx="80" cy="100" rx="7" ry="5" fill="#f5b387" opacity="0.48"/>
+                      <path class="mouth-normal" d="M62 116 Q80 132 98 116" fill="none" stroke="#4a2c0f" stroke-width="4.5" stroke-linecap="round"/>
+                      <g class="mouth-laugh" style="display:none">
+                        <path d="M60 112 Q80 144 100 112 Z" fill="#9b111e" stroke="#4a2c0f" stroke-width="4" stroke-linejoin="round"/>
+                        <path d="M64 114 Q80 124 96 114" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M71 132 Q80 124 89 132" fill="#ff7a59"/>
+                      </g>
+                      <path class="mouth-cry" style="display:none" d="M64 124 Q80 108 96 124" fill="none" stroke="#4a2c0f" stroke-width="4.5" stroke-linecap="round"/>
+                      <g class="mouth-open" style="display:none">
+                        <ellipse cx="80" cy="120" rx="12" ry="16" fill="#291605" stroke="#4a2c0f" stroke-width="3"/>
+                        <path d="M73 126 C73 120,87 120,87 126 C87 132,73 132,73 126 Z" fill="#ff7a59" opacity="0.9"/>
+                      </g>
+                      <g class="teardrops" style="display:none">
+                        <path d="M57 90 C51 103,51 109,57 120 C63 109,63 103,57 90 Z" fill="#4fc3f7" opacity="0.9"/>
+                        <path d="M103 90 C97 103,97 109,103 120 C109 109,109 103,103 90 Z" fill="#4fc3f7" opacity="0.9"/>
+                      </g>
+                      <path d="M25 82 C22 28,138 28,135 82 C150 72,150 46,135 30 C112 6,48 6,25 30 C10 46,10 72,25 82 Z" fill="url(#a-hr)"/>
+                      <path d="M25 78 L26 110 L40 97 L54 112 L68 93 L80 108 L92 91 L106 106 L120 95 L134 110 L135 78 Z" fill="url(#a-hr)"/>
+                      <path d="M52 22 Q66 2 83 13 Q68 22 62 24" fill="url(#a-hr)"/>
+                      <path d="M78 17 Q96 -2 112 11 Q95 20 88 22" fill="url(#a-hr)"/>
+                    </g>
+                  </g>
+                </svg>
+                <div class="char-name">Əli</div>
+            </div>
+
+            <!-- ── AYNUR ── -->
+            <div class="char-wrapper" id="char-aynur">
+                <svg viewBox="0 0 160 360" class="char-svg" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <radialGradient id="ay-sk" cx="35%" cy="30%" r="65%">
+                      <stop offset="0%" stop-color="#fff8f5"/><stop offset="40%" stop-color="#ffe8d6"/>
+                      <stop offset="85%" stop-color="#f8c4a8"/><stop offset="100%" stop-color="#e09070"/>
+                    </radialGradient>
+                    <linearGradient id="ay-dr" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#ff80b0"/><stop offset="100%" stop-color="#c8205a"/>
+                    </linearGradient>
+                    <linearGradient id="ay-hr" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#c44b22"/><stop offset="100%" stop-color="#7a1e08"/>
+                    </linearGradient>
+                    <filter id="ay-f"><feDropShadow dx="0" dy="5" stdDeviation="5" flood-opacity="0.18"/></filter>
+                  </defs>
+                  <g class="char-body" filter="url(#ay-f)">
+                    <g class="left-arm">
+                      <ellipse cx="36" cy="172" rx="18" ry="13" fill="#ff94c0"/>
+                      <path d="M38 180 L20 250" stroke="#ffaad4" stroke-width="20" stroke-linecap="round"/>
+                      <circle cx="15" cy="256" r="12" fill="url(#ay-sk)"/>
+                    </g>
+                    <g class="right-arm">
+                      <ellipse cx="124" cy="172" rx="18" ry="13" fill="#ff94c0"/>
+                      <path d="M122 180 L140 250" stroke="#ffaad4" stroke-width="20" stroke-linecap="round"/>
+                      <circle cx="145" cy="256" r="12" fill="url(#ay-sk)"/>
+                    </g>
+                    <path class="torso" d="M46 162 Q80 155 114 162 L132 360 Q80 368 28 360 Z" fill="url(#ay-dr)"/>
+                    <path d="M50 162 Q80 178 110 162" fill="none" stroke="white" stroke-width="7" stroke-linecap="round"/>
+                    <circle cx="65" cy="210" r="4" fill="white" opacity="0.38"/>
+                    <circle cx="95" cy="224" r="4" fill="white" opacity="0.38"/>
+                    <circle cx="72" cy="248" r="4.5" fill="white" opacity="0.33"/>
+                    <circle cx="106" cy="262" r="5" fill="white" opacity="0.3"/>
+                    <rect x="68" y="140" width="24" height="24" rx="4" fill="url(#ay-sk)"/>
+                    <g class="head">
+                      <circle cx="26" cy="92" r="14" fill="url(#ay-sk)"/>
+                      <circle cx="134" cy="92" r="14" fill="url(#ay-sk)"/>
+                      <circle cx="80" cy="85" r="57" fill="url(#ay-sk)"/>
+                      <path d="M34 55 A57 57 0 0 1 126 55 A64 64 0 0 0 34 55 Z" fill="white" opacity="0.2"/>
+                      <circle cx="30" cy="106" r="15" fill="#ff6090" opacity="0.28"/>
+                      <circle cx="130" cy="106" r="15" fill="#ff6090" opacity="0.28"/>
+                      <g class="normal-eyes">
+                        <circle cx="60" cy="80" r="15" fill="white"/><circle cx="60" cy="80" r="10" fill="#3a2060"/><circle cx="55" cy="75" r="5" fill="white"/>
+                        <path d="M46 68 Q60 58 74 68" fill="none" stroke="#3a2060" stroke-width="2.5" stroke-linecap="round" opacity="0.65"/>
+                        <circle cx="100" cy="80" r="15" fill="white"/><circle cx="100" cy="80" r="10" fill="#3a2060"/><circle cx="95" cy="75" r="5" fill="white"/>
+                        <path d="M86 68 Q100 58 114 68" fill="none" stroke="#3a2060" stroke-width="2.5" stroke-linecap="round" opacity="0.65"/>
+                      </g>
+                      <g class="happy-eyes" style="display:none">
+                        <path d="M45 83 Q60 65 75 83" fill="none" stroke="#3a2060" stroke-width="5.5" stroke-linecap="round"/>
+                        <path d="M85 83 Q100 65 115 83" fill="none" stroke="#3a2060" stroke-width="5.5" stroke-linecap="round"/>
+                      </g>
+                      <g class="crying-eyes" style="display:none">
+                        <path d="M46 77 Q60 92 74 77" fill="none" stroke="#1d3557" stroke-width="5" stroke-linecap="round"/>
+                        <path d="M86 77 Q100 92 114 77" fill="none" stroke="#1d3557" stroke-width="5" stroke-linecap="round"/>
+                      </g>
+                      <path d="M44 59 Q60 51 76 57" fill="none" stroke="#5a2010" stroke-width="4" stroke-linecap="round"/>
+                      <path d="M84 57 Q100 51 116 59" fill="none" stroke="#5a2010" stroke-width="4" stroke-linecap="round"/>
+                      <ellipse cx="80" cy="98" rx="6" ry="4.5" fill="#f8c4a8" opacity="0.5"/>
+                      <path class="mouth-normal" d="M63 114 Q80 130 97 114" fill="none" stroke="#8b2244" stroke-width="4.5" stroke-linecap="round"/>
+                      <g class="mouth-laugh" style="display:none">
+                        <path d="M61 110 Q80 142 99 110 Z" fill="#a01840" stroke="#8b2244" stroke-width="4" stroke-linejoin="round"/>
+                        <path d="M65 112 Q80 122 95 112" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M70 130 Q80 122 90 130" fill="#ff7a59"/>
+                      </g>
+                      <path class="mouth-cry" style="display:none" d="M65 122 Q80 106 95 122" fill="none" stroke="#8b2244" stroke-width="4.5" stroke-linecap="round"/>
+                      <g class="mouth-open" style="display:none">
+                        <ellipse cx="80" cy="118" rx="11" ry="15" fill="#4a1020" stroke="#8b2244" stroke-width="3"/>
+                        <path d="M74 124 C74 118,86 118,86 124 C86 130,74 130,74 124 Z" fill="#ff7a59" opacity="0.9"/>
+                      </g>
+                      <g class="teardrops" style="display:none">
+                        <path d="M57 88 C51 101,51 107,57 118 C63 107,63 101,57 88 Z" fill="#4fc3f7" opacity="0.9"/>
+                        <path d="M103 88 C97 101,97 107,103 118 C109 107,109 101,103 88 Z" fill="#4fc3f7" opacity="0.9"/>
+                      </g>
+                      <!-- Auburn hair with pigtails -->
+                      <path d="M22 78 C18 24,142 24,138 78 C154 64,154 40,138 24 C114 0,46 0,22 24 C6 40,6 64,22 78 Z" fill="url(#ay-hr)"/>
+                      <path d="M22 74 L26 98 L38 82 L52 100 L66 84 L80 100 L94 82 L108 98 L122 84 L134 98 L138 74 Z" fill="url(#ay-hr)"/>
+                      <!-- Left pigtail -->
+                      <path d="M20 78 C4 90,0 116,9 132 C18 148,32 143,27 128 C22 113,18 100,24 90 Z" fill="url(#ay-hr)"/>
+                      <!-- Right pigtail -->
+                      <path d="M140 78 C156 90,160 116,151 132 C142 148,128 143,133 128 C138 113,142 100,136 90 Z" fill="url(#ay-hr)"/>
+                      <!-- Bows -->
+                      <path d="M8 88 Q2 80 8 72 Q14 80 20 72 Q18 80 20 88 Q14 82 8 88 Z" fill="#FFD700"/>
+                      <circle cx="14" cy="80" r="3.5" fill="#e8b800"/>
+                      <path d="M140 88 Q134 80 140 72 Q146 80 152 72 Q150 80 152 88 Q146 82 140 88 Z" fill="#FFD700"/>
+                      <circle cx="146" cy="80" r="3.5" fill="#e8b800"/>
+                    </g>
+                  </g>
+                </svg>
+                <div class="char-name">Aynur</div>
+            </div>
+
+            <!-- ── KAMRAN ── -->
+            <div class="char-wrapper" id="char-kamran">
+                <svg viewBox="0 0 160 360" class="char-svg" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <radialGradient id="k-sk" cx="35%" cy="30%" r="65%">
+                      <stop offset="0%" stop-color="#fff8f0"/><stop offset="40%" stop-color="#ffe0c0"/>
+                      <stop offset="85%" stop-color="#f5bb8a"/><stop offset="100%" stop-color="#d4905a"/>
+                    </radialGradient>
+                    <linearGradient id="k-hd" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#ffe566"/><stop offset="100%" stop-color="#d4a000"/>
+                    </linearGradient>
+                    <linearGradient id="k-sh" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#4488cc"/><stop offset="100%" stop-color="#1a5a9a"/>
+                    </linearGradient>
+                    <linearGradient id="k-hr" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#e8c060"/><stop offset="100%" stop-color="#b08018"/>
+                    </linearGradient>
+                    <filter id="k-f"><feDropShadow dx="0" dy="5" stdDeviation="5" flood-opacity="0.18"/></filter>
+                  </defs>
+                  <g class="char-body" filter="url(#k-f)">
+                    <g class="left-arm">
+                      <path d="M50 168 L20 246" stroke="url(#k-hd)" stroke-width="24" stroke-linecap="round"/>
+                      <circle cx="14" cy="252" r="13" fill="url(#k-sk)"/>
+                    </g>
+                    <g class="right-arm">
+                      <path d="M110 168 L140 246" stroke="url(#k-hd)" stroke-width="24" stroke-linecap="round"/>
+                      <circle cx="146" cy="252" r="13" fill="url(#k-sk)"/>
+                    </g>
+                    <path class="torso" d="M42 158 Q80 150 118 158 L120 270 Q80 278 40 270 Z" fill="url(#k-hd)"/>
+                    <rect x="58" y="222" width="44" height="28" rx="8" fill="#e8b800" opacity="0.75"/>
+                    <circle cx="70" cy="173" r="3" fill="#b8900c"/>
+                    <circle cx="90" cy="173" r="3" fill="#b8900c"/>
+                    <path d="M70 173 Q80 181 90 173" fill="none" stroke="#b8900c" stroke-width="2"/>
+                    <rect x="68" y="136" width="24" height="24" rx="4" fill="url(#k-sk)"/>
+                    <!-- Shorts -->
+                    <rect x="40" y="270" width="36" height="40" rx="6" fill="url(#k-sh)"/>
+                    <rect x="84" y="270" width="36" height="40" rx="6" fill="url(#k-sh)"/>
+                    <!-- Skin legs -->
+                    <rect x="46" y="306" width="24" height="30" fill="url(#k-sk)"/>
+                    <rect x="90" y="306" width="24" height="30" fill="url(#k-sk)"/>
+                    <!-- Socks -->
+                    <rect x="44" y="330" width="27" height="12" fill="white"/>
+                    <rect x="44" y="338" width="27" height="3.5" fill="#4488cc"/>
+                    <rect x="89" y="330" width="27" height="12" fill="white"/>
+                    <rect x="89" y="338" width="27" height="3.5" fill="#4488cc"/>
+                    <!-- Blue sneakers -->
+                    <path d="M33 342 C33 337,69 337,69 342 C69 351,73 354,73 360 L29 360 Z" fill="#3377bb"/>
+                    <rect x="28" y="358" width="46" height="5" rx="2" fill="white"/>
+                    <path d="M81 342 C81 337,117 337,117 342 C117 351,121 354,121 360 L77 360 Z" fill="#3377bb"/>
+                    <rect x="76" y="358" width="46" height="5" rx="2" fill="white"/>
+                    <g class="head">
+                      <circle cx="27" cy="90" r="13" fill="url(#k-sk)"/>
+                      <circle cx="133" cy="90" r="13" fill="url(#k-sk)"/>
+                      <circle cx="80" cy="82" r="55" fill="url(#k-sk)"/>
+                      <path d="M35 53 A55 55 0 0 1 125 53 A62 62 0 0 0 35 53 Z" fill="white" opacity="0.2"/>
+                      <circle cx="31" cy="102" r="15" fill="#ff8050" opacity="0.23"/>
+                      <circle cx="129" cy="102" r="15" fill="#ff8050" opacity="0.23"/>
+                      <g class="normal-eyes">
+                        <circle cx="60" cy="78" r="16" fill="white"/><circle cx="60" cy="78" r="11" fill="#1a3050"/><circle cx="55" cy="73" r="5.5" fill="white"/>
+                        <circle cx="100" cy="78" r="16" fill="white"/><circle cx="100" cy="78" r="11" fill="#1a3050"/><circle cx="95" cy="73" r="5.5" fill="white"/>
+                      </g>
+                      <g class="happy-eyes" style="display:none">
+                        <path d="M44 81 Q60 63 76 81" fill="none" stroke="#212529" stroke-width="6" stroke-linecap="round"/>
+                        <path d="M84 81 Q100 63 116 81" fill="none" stroke="#212529" stroke-width="6" stroke-linecap="round"/>
+                      </g>
+                      <g class="crying-eyes" style="display:none">
+                        <path d="M45 76 Q60 92 75 76" fill="none" stroke="#1d3557" stroke-width="5.5" stroke-linecap="round"/>
+                        <path d="M85 76 Q100 92 115 76" fill="none" stroke="#1d3557" stroke-width="5.5" stroke-linecap="round"/>
+                      </g>
+                      <path d="M44 58 Q60 50 76 56" fill="none" stroke="#5a3800" stroke-width="4" stroke-linecap="round"/>
+                      <path d="M84 56 Q100 50 116 58" fill="none" stroke="#5a3800" stroke-width="4" stroke-linecap="round"/>
+                      <ellipse cx="80" cy="95" rx="7" ry="5.5" fill="#f5bb8a" opacity="0.48"/>
+                      <path class="mouth-normal" d="M62 113 Q80 130 98 113" fill="none" stroke="#5a3800" stroke-width="4.5" stroke-linecap="round"/>
+                      <g class="mouth-laugh" style="display:none">
+                        <path d="M60 109 Q80 141 100 109 Z" fill="#8a2200" stroke="#5a3800" stroke-width="4" stroke-linejoin="round"/>
+                        <path d="M64 111 Q80 121 96 111" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M70 129 Q80 121 90 129" fill="#ff7a59"/>
+                      </g>
+                      <path class="mouth-cry" style="display:none" d="M64 121 Q80 105 96 121" fill="none" stroke="#5a3800" stroke-width="4.5" stroke-linecap="round"/>
+                      <g class="mouth-open" style="display:none">
+                        <ellipse cx="80" cy="117" rx="12" ry="16" fill="#2a1000" stroke="#5a3800" stroke-width="3"/>
+                        <path d="M73 123 C73 117,87 117,87 123 C87 129,73 129,73 123 Z" fill="#ff7a59" opacity="0.9"/>
+                      </g>
+                      <g class="teardrops" style="display:none">
+                        <path d="M57 86 C51 99,51 105,57 116 C63 105,63 99,57 86 Z" fill="#4fc3f7" opacity="0.9"/>
+                        <path d="M103 86 C97 99,97 105,103 116 C109 105,109 99,103 86 Z" fill="#4fc3f7" opacity="0.9"/>
+                      </g>
+                      <!-- Blonde hair (bowl cut) -->
+                      <path d="M26 78 C23 24,137 24,134 78 C150 64,150 40,134 24 C112 0,48 0,26 24 C10 40,10 64,26 78 Z" fill="url(#k-hr)"/>
+                      <path d="M26 74 L28 95 L42 80 L56 98 L70 82 L80 98 L90 80 L104 96 L118 82 L132 94 L134 74 Z" fill="url(#k-hr)"/>
+                    </g>
+                  </g>
+                </svg>
+                <div class="char-name">Kamran</div>
+            </div>
+
+            <!-- ── LEYLA ── -->
+            <div class="char-wrapper" id="char-leyla">
+                <svg viewBox="0 0 160 360" class="char-svg" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <radialGradient id="l-sk" cx="35%" cy="30%" r="65%">
+                      <stop offset="0%" stop-color="#fff9f6"/><stop offset="40%" stop-color="#fde8d8"/>
+                      <stop offset="85%" stop-color="#f5c0a0"/><stop offset="100%" stop-color="#d89070"/>
+                    </radialGradient>
+                    <linearGradient id="l-dr" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#b87fff"/><stop offset="100%" stop-color="#6020b0"/>
+                    </linearGradient>
+                    <linearGradient id="l-hr" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#4a2c0f"/><stop offset="100%" stop-color="#1a0a00"/>
+                    </linearGradient>
+                    <filter id="l-f"><feDropShadow dx="0" dy="5" stdDeviation="5" flood-opacity="0.18"/></filter>
+                  </defs>
+                  <g class="char-body" filter="url(#l-f)">
+                    <g class="left-arm">
+                      <ellipse cx="36" cy="168" rx="18" ry="13" fill="#c89af0"/>
+                      <path d="M38 176 L20 248" stroke="#d0aaff" stroke-width="20" stroke-linecap="round"/>
+                      <circle cx="14" cy="254" r="12" fill="url(#l-sk)"/>
+                    </g>
+                    <g class="right-arm">
+                      <ellipse cx="124" cy="168" rx="18" ry="13" fill="#c89af0"/>
+                      <path d="M122 176 L140 248" stroke="#d0aaff" stroke-width="20" stroke-linecap="round"/>
+                      <circle cx="146" cy="254" r="12" fill="url(#l-sk)"/>
+                    </g>
+                    <path class="torso" d="M46 158 Q80 152 114 158 L136 360 Q80 370 24 360 Z" fill="url(#l-dr)"/>
+                    <path d="M50 158 Q80 176 110 158" fill="none" stroke="white" stroke-width="6" stroke-linecap="round"/>
+                    <text x="62" y="212" font-size="13" fill="white" opacity="0.45">★</text>
+                    <text x="90" y="232" font-size="11" fill="white" opacity="0.38">★</text>
+                    <text x="53" y="255" font-size="12" fill="white" opacity="0.42">★</text>
+                    <text x="97" y="272" font-size="10" fill="white" opacity="0.38">★</text>
+                    <rect x="68" y="136" width="24" height="24" rx="4" fill="url(#l-sk)"/>
+                    <g class="head">
+                      <circle cx="27" cy="90" r="14" fill="url(#l-sk)"/>
+                      <circle cx="133" cy="90" r="14" fill="url(#l-sk)"/>
+                      <circle cx="80" cy="83" r="57" fill="url(#l-sk)"/>
+                      <path d="M34 53 A57 57 0 0 1 126 53 A64 64 0 0 0 34 53 Z" fill="white" opacity="0.2"/>
+                      <circle cx="30" cy="103" r="15" fill="#cc5090" opacity="0.25"/>
+                      <circle cx="130" cy="103" r="15" fill="#cc5090" opacity="0.25"/>
+                      <g class="normal-eyes">
+                        <circle cx="60" cy="78" r="15" fill="white"/><circle cx="60" cy="78" r="10" fill="#3a1060"/><circle cx="55" cy="73" r="5" fill="white"/>
+                        <path d="M46 66 Q60 56 74 66" fill="none" stroke="#3a1060" stroke-width="2.5" stroke-linecap="round" opacity="0.65"/>
+                        <circle cx="100" cy="78" r="15" fill="white"/><circle cx="100" cy="78" r="10" fill="#3a1060"/><circle cx="95" cy="73" r="5" fill="white"/>
+                        <path d="M86 66 Q100 56 114 66" fill="none" stroke="#3a1060" stroke-width="2.5" stroke-linecap="round" opacity="0.65"/>
+                      </g>
+                      <g class="happy-eyes" style="display:none">
+                        <path d="M45 81 Q60 63 75 81" fill="none" stroke="#3a1060" stroke-width="5.5" stroke-linecap="round"/>
+                        <path d="M85 81 Q100 63 115 81" fill="none" stroke="#3a1060" stroke-width="5.5" stroke-linecap="round"/>
+                      </g>
+                      <g class="crying-eyes" style="display:none">
+                        <path d="M46 75 Q60 91 74 75" fill="none" stroke="#1d3557" stroke-width="5" stroke-linecap="round"/>
+                        <path d="M86 75 Q100 91 114 75" fill="none" stroke="#1d3557" stroke-width="5" stroke-linecap="round"/>
+                      </g>
+                      <path d="M44 57 Q60 49 76 55" fill="none" stroke="#2a0a40" stroke-width="4" stroke-linecap="round"/>
+                      <path d="M84 55 Q100 49 116 57" fill="none" stroke="#2a0a40" stroke-width="4" stroke-linecap="round"/>
+                      <ellipse cx="80" cy="95" rx="6" ry="4.5" fill="#f5c0a0" opacity="0.5"/>
+                      <path class="mouth-normal" d="M63 112 Q80 128 97 112" fill="none" stroke="#5a1060" stroke-width="4.5" stroke-linecap="round"/>
+                      <g class="mouth-laugh" style="display:none">
+                        <path d="M61 108 Q80 140 99 108 Z" fill="#8a1050" stroke="#5a1060" stroke-width="4" stroke-linejoin="round"/>
+                        <path d="M65 110 Q80 120 95 110" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M71 128 Q80 120 89 128" fill="#ff7a59"/>
+                      </g>
+                      <path class="mouth-cry" style="display:none" d="M65 120 Q80 104 95 120" fill="none" stroke="#5a1060" stroke-width="4.5" stroke-linecap="round"/>
+                      <g class="mouth-open" style="display:none">
+                        <ellipse cx="80" cy="116" rx="11" ry="15" fill="#3a0820" stroke="#5a1060" stroke-width="3"/>
+                        <path d="M74 122 C74 116,86 116,86 122 C86 128,74 128,74 122 Z" fill="#ff7a59" opacity="0.9"/>
+                      </g>
+                      <g class="teardrops" style="display:none">
+                        <path d="M57 86 C51 99,51 105,57 116 C63 105,63 99,57 86 Z" fill="#4fc3f7" opacity="0.9"/>
+                        <path d="M103 86 C97 99,97 105,103 116 C109 105,109 99,103 86 Z" fill="#4fc3f7" opacity="0.9"/>
+                      </g>
+                      <!-- Long dark hair flowing down sides -->
+                      <path d="M20 73 C15 120,18 172,28 202 L40 202 C32 170,30 122,26 78 Z" fill="url(#l-hr)"/>
+                      <path d="M140 73 C145 120,142 172,132 202 L120 202 C128 170,130 122,134 78 Z" fill="url(#l-hr)"/>
+                      <!-- Crown hair -->
+                      <path d="M22 76 C20 22,140 22,138 76 C154 62,154 38,138 22 C114 -2,46 -2,22 22 C6 38,6 62,22 76 Z" fill="url(#l-hr)"/>
+                      <path d="M22 72 L26 98 L38 80 L52 100 L66 82 L80 98 L100 80 L116 98 L130 82 L134 98 L138 72 Z" fill="url(#l-hr)"/>
+                      <!-- Hair scrunchie -->
+                      <ellipse cx="128" cy="92" rx="9" ry="6" fill="#9b40d0" transform="rotate(-20,128,92)"/>
+                      <ellipse cx="128" cy="92" rx="6" ry="4" fill="#c060f8" opacity="0.7" transform="rotate(-20,128,92)"/>
+                    </g>
+                  </g>
+                </svg>
+                <div class="char-name">Leyla</div>
+            </div>
+
+        </div><!-- /characters-stage -->
+    </div><!-- /scene-section -->
+
+    <!-- ═══ CONTROLS ══════════════════════════════════════════ -->
+    <div class="controls-section">
+        <div class="controls-top">
+            <div class="mic-card">
+                <button class="btn-mic" id="btnMic">
+                    <i class="fa-solid fa-microphone mic-icon"></i>
+                    <span id="btnMicText">Dinləmə Aktiv</span>
+                </button>
+                <p class="mic-status-label" id="micStatusLabel">Mikrofon aktiv — əmrləri deyin!</p>
+                <div class="transcript-box" id="transcriptBox" style="display:none;">
+                    <span class="transcript-label">Eşitdim:</span>
+                    <span class="transcript-text" id="transcriptText"></span>
+                </div>
+            </div>
+            <div class="mic-wave-container" id="micWaveContainer">
+                <div class="wave-bar"></div><div class="wave-bar"></div>
+                <div class="wave-bar"></div><div class="wave-bar"></div>
+                <div class="wave-bar"></div><div class="wave-bar"></div>
+                <div class="wave-bar"></div><div class="wave-bar"></div>
+            </div>
+        </div>
+        <div class="commands-grid">
+            <button class="btn-command" data-command="otur"><span class="btn-emoji">🧎‍♂️</span><span class="btn-label">Otur</span></button>
+            <button class="btn-command" data-command="dur"><span class="btn-emoji">🧍‍♂️</span><span class="btn-label">Dur</span></button>
+            <button class="btn-command" data-command="gel"><span class="btn-emoji">🚶‍♂️</span><span class="btn-label">Gəl</span></button>
+            <button class="btn-command" data-command="get"><span class="btn-emoji">🏃‍♂️</span><span class="btn-label">Get</span></button>
+            <button class="btn-command" data-command="gul"><span class="btn-emoji">😄</span><span class="btn-label">Gül</span></button>
+            <button class="btn-command" data-command="agla"><span class="btn-emoji">😢</span><span class="btn-label">Ağla</span></button>
+            <button class="btn-command" data-command="agiz-ac"><span class="btn-emoji">😮</span><span class="btn-label">Ağzını aç</span></button>
+            <button class="btn-command" data-command="qulaq-tut"><span class="btn-emoji">👂</span><span class="btn-label">Qulağını tut</span></button>
+            <button class="btn-command" data-command="el-cal"><span class="btn-emoji">👏</span><span class="btn-label">Əl çal</span></button>
         </div>
     </div>
 
-    <div class="app-container">
-        <!-- Header -->
-        <header class="app-header">
-            <div class="logo">
-                <i class="fa-solid fa-face-smile-beam logo-icon"></i>
-                <h1>Şirin Dostum</h1>
-            </div>
-            <div class="status-indicator" id="statusIndicator">
-                <span class="status-dot"></span>
-                <span class="status-text">Hazırdır</span>
-            </div>
-        </header>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Left Side: Character Display -->
-            <div class="display-section">
-                <div class="character-card">
-                    <!-- Text Bubble for spoken words / character speech -->
-                    <div class="speech-bubble-container">
-                        <div class="speech-bubble" id="speechBubble">
-                            Mənimlə danışmaq üçün mikrofonu aç! 😊
-                        </div>
-                    </div>
-
-                    <!-- SVG Character Area -->
-                    <div class="character-area" id="characterArea">
-                        <svg id="boyCharacter" viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
-                            <!-- 3D Gradients and Shading Defs -->
-                            <defs>
-                                <!-- Head/Skin Radial Gradient (creates a 3D sphere look) -->
-                                <radialGradient id="skin3D" cx="35%" cy="30%" r="65%">
-                                    <stop offset="0%" stop-color="#fff6f0" />
-                                    <stop offset="40%" stop-color="#ffdcb8" />
-                                    <stop offset="85%" stop-color="#f5b387" />
-                                    <stop offset="100%" stop-color="#d48053" />
-                                </radialGradient>
-                                
-                                <!-- Red Vest 3D Gradient -->
-                                <linearGradient id="vestRed3D" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#ff6b7d" />
-                                    <stop offset="40%" stop-color="#e63946" />
-                                    <stop offset="100%" stop-color="#9a101f" />
-                                </linearGradient>
-
-                                <!-- Red Sneaker 3D Gradient -->
-                                <radialGradient id="shoeRed3D" cx="40%" cy="30%" r="70%">
-                                    <stop offset="0%" stop-color="#ff7380" />
-                                    <stop offset="60%" stop-color="#e63946" />
-                                    <stop offset="100%" stop-color="#9b111e" />
-                                </radialGradient>
-                                
-                                <!-- Yellow Stripe 3D Gradient -->
-                                <linearGradient id="stripeYellow3D" x1="0" y1="0" x2="1" y2="0">
-                                    <stop offset="0%" stop-color="#ffe699" />
-                                    <stop offset="50%" stop-color="#ffb703" />
-                                    <stop offset="100%" stop-color="#cc8e00" />
-                                </linearGradient>
-                                
-                                <!-- Orange Stripe 3D Gradient -->
-                                <linearGradient id="stripeOrange3D" x1="0" y1="0" x2="1" y2="0">
-                                    <stop offset="0%" stop-color="#ffb880" />
-                                    <stop offset="50%" stop-color="#fb8500" />
-                                    <stop offset="100%" stop-color="#cc6600" />
-                                </linearGradient>
-                                
-                                <!-- Blue Sleeve 3D Gradient -->
-                                <linearGradient id="sleeveBlue3D" x1="0" y1="0" x2="1" y2="0">
-                                    <stop offset="0%" stop-color="#698cae" />
-                                    <stop offset="50%" stop-color="#3d5a80" />
-                                    <stop offset="100%" stop-color="#21334d" />
-                                </linearGradient>
-                                
-                                <!-- Pants 3D Gradient -->
-                                <linearGradient id="pantsGrey3D" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#7e8d99" />
-                                    <stop offset="85%" stop-color="#5c6b73" />
-                                    <stop offset="100%" stop-color="#3b464a" />
-                                </linearGradient>
-                                
-                                <!-- Hair 3D Gradient -->
-                                <linearGradient id="hairBrown3D" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#734e36" />
-                                    <stop offset="60%" stop-color="#4a2c0f" />
-                                    <stop offset="100%" stop-color="#291605" />
-                                </linearGradient>
-                                
-                                <!-- Eye Pupils 3D Gradient -->
-                                <radialGradient id="pupilBlue3D" cx="40%" cy="40%" r="60%">
-                                    <stop offset="0%" stop-color="#4a6d8c" />
-                                    <stop offset="70%" stop-color="#2d3142" />
-                                    <stop offset="100%" stop-color="#11131a" />
-                                </radialGradient>
-                                
-                                <!-- Blush Cheek Radial Gradient -->
-                                <radialGradient id="blush3D" cx="50%" cy="50%" r="50%">
-                                    <stop offset="0%" stop-color="#ff7a59" stop-opacity="0.6" />
-                                    <stop offset="100%" stop-color="#ff7a59" stop-opacity="0" />
-                                </radialGradient>
-                                
-                                <!-- Soccer Ball 3D Shading Overlay -->
-                                <radialGradient id="ballShading3D" cx="35%" cy="35%" r="65%">
-                                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8" />
-                                    <stop offset="55%" stop-color="#d0d0d0" stop-opacity="0.4" />
-                                    <stop offset="100%" stop-color="#303030" stop-opacity="0.7" />
-                                </radialGradient>
-
-                                <!-- Drop Shadow Filter for 3D depth -->
-                                <filter id="softShadow3D" x="-10%" y="-10%" width="120%" height="120%">
-                                    <feDropShadow dx="0" dy="6" stdDeviation="5" flood-opacity="0.15" />
-                                </filter>
-                            </defs>
-
-                            <!-- Background shadow under character -->
-                            <ellipse class="shadow" cx="200" cy="455" rx="60" ry="12" fill="rgba(0, 0, 0, 0.18)" />
-
-                            <g class="character-body-group" id="charBodyGroup">
-                                <!-- LEGS -->
-                                <g class="leg left-leg" id="leftLeg" filter="url(#softShadow3D)">
-                                    <!-- Pants sleeve left -->
-                                    <rect x="155" y="340" width="30" height="35" rx="6" fill="url(#pantsGrey3D)" />
-                                    <!-- Cast shadow under pants -->
-                                    <rect x="155" y="372" width="30" height="4" fill="rgba(0,0,0,0.2)" />
-                                    <!-- Skin leg -->
-                                    <rect x="162" y="375" width="16" height="40" fill="url(#skin3D)" />
-                                    <!-- Sock -->
-                                    <rect x="162" y="408" width="16" height="12" fill="#ffffff" />
-                                    <rect x="162" y="414" width="16" height="2" fill="#e63946" />
-                                    <!-- Shoe (3D Sneaker) -->
-                                    <path d="M 152 425 C 152 420, 182 420, 182 425 C 182 432, 186 435, 186 440 C 186 445, 150 445, 150 440 Z" fill="url(#shoeRed3D)" />
-                                    <!-- Sneaker Sole & Highlights -->
-                                    <rect x="149" y="439" width="38" height="5" rx="2" fill="#ffffff" />
-                                    <path d="M 154 425 L 165 429" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.6" />
-                                    <path d="M 156 421 L 162 424" stroke="#ffffff" stroke-width="1" opacity="0.7" />
-                                </g>
-
-                                <g class="leg right-leg" id="rightLeg" filter="url(#softShadow3D)">
-                                    <!-- Pants sleeve right -->
-                                    <rect x="215" y="340" width="30" height="35" rx="6" fill="url(#pantsGrey3D)" />
-                                    <!-- Cast shadow under pants -->
-                                    <rect x="215" y="372" width="30" height="4" fill="rgba(0,0,0,0.2)" />
-                                    <!-- Skin leg -->
-                                    <rect x="222" y="375" width="16" height="40" fill="url(#skin3D)" />
-                                    <!-- Sock -->
-                                    <rect x="222" y="408" width="16" height="12" fill="#ffffff" />
-                                    <rect x="222" y="414" width="16" height="2" fill="#e63946" />
-                                    <!-- Shoe (3D Sneaker) -->
-                                    <path d="M 218 425 C 218 420, 248 420, 248 425 C 248 432, 250 435, 250 440 C 250 445, 214 445, 214 440 Z" fill="url(#shoeRed3D)" />
-                                    <!-- Sneaker Sole & Highlights -->
-                                    <rect x="213" y="439" width="38" height="5" rx="2" fill="#ffffff" />
-                                    <path d="M 234 425 L 245 429" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.6" />
-                                    <path d="M 236 421 L 242 424" stroke="#ffffff" stroke-width="1" opacity="0.7" />
-                                </g>
-
-                                <!-- TORSO (Red Vest over Striped Shirt) -->
-                                <g class="torso" id="torso" filter="url(#softShadow3D)">
-                                    <!-- Neck -->
-                                    <rect x="188" y="235" width="24" height="24" rx="4" fill="url(#skin3D)" />
-                                    <!-- Cast shadow from chin on neck -->
-                                    <path d="M 188 238 Q 200 248 212 238 L 212 245 Q 200 252 188 245 Z" fill="rgba(0, 0, 0, 0.22)" />
-                                    
-                                    <!-- Striped inner shirt sides -->
-                                    <path d="M 150 250 Q 200 245 250 250 L 245 350 Q 200 355 155 350 Z" fill="#eae2b7" />
-                                    
-                                    <!-- Red Vest with 3D gradient -->
-                                    <path d="M 155 250 Q 200 246 245 250 L 240 346 Q 200 352 160 346 Z" fill="url(#vestRed3D)" />
-                                    
-                                    <!-- Vest Details: White vertical zipper line and emblem -->
-                                    <line x1="200" y1="262" x2="200" y2="346" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.95" />
-                                    <!-- Zipper pull -->
-                                    <rect x="198" y="258" width="4" height="7" rx="1.5" fill="#d0d0d0" />
-                                    
-                                    <!-- Cute Emblem -->
-                                    <circle cx="218" cy="282" r="7" fill="#ffffff" />
-                                    <circle cx="218" cy="282" r="5.5" fill="url(#vestRed3D)" />
-                                    <text x="218" y="285" font-family="Outfit" font-size="9" font-weight="900" fill="#ffffff" text-anchor="middle">B</text>
-                                    
-                                    <!-- Vest Collar -->
-                                    <path d="M 172 250 Q 200 270 228 250" fill="none" stroke="#ffffff" stroke-width="5.5" stroke-linecap="round" />
-                                </g>
-
-                                <!-- ARMS -->
-                                <!-- Left Arm (Striped Sleeve + Hand) -->
-                                <g class="arm left-arm" id="leftArm" filter="url(#softShadow3D)">
-                                    <!-- Shoulder joint -->
-                                    <circle cx="155" cy="265" r="12" fill="url(#vestRed3D)" />
-                                    <!-- Arm path -->
-                                    <path d="M 150 265 L 115 315" stroke="url(#sleeveBlue3D)" stroke-width="18" stroke-linecap="round" id="leftArmSleeve" />
-                                    <!-- Striped patterns on sleeve -->
-                                    <line x1="143" y1="275" x2="135" y2="286" stroke="url(#stripeYellow3D)" stroke-width="18" />
-                                    <line x1="133" y1="289" x2="125" y2="300" stroke="url(#stripeOrange3D)" stroke-width="18" />
-                                    <line x1="123" y1="303" x2="117" y2="312" stroke="url(#sleeveBlue3D)" stroke-width="18" />
-                                    <!-- Hand -->
-                                    <circle cx="110" cy="322" r="11" fill="url(#skin3D)" />
-                                    <!-- Hand highlight -->
-                                    <circle cx="107" cy="319" r="3" fill="#ffffff" opacity="0.3" />
-                                </g>
-
-                                <!-- Right Arm (Striped Sleeve + Hand) -->
-                                <g class="arm right-arm" id="rightArm" filter="url(#softShadow3D)">
-                                    <!-- Shoulder joint -->
-                                    <circle cx="245" cy="265" r="12" fill="url(#vestRed3D)" />
-                                    <!-- Arm path -->
-                                    <path d="M 250 265 L 285 315" stroke="url(#sleeveBlue3D)" stroke-width="18" stroke-linecap="round" id="rightArmSleeve" />
-                                    <!-- Striped patterns on sleeve -->
-                                    <line x1="257" y1="275" x2="265" y2="286" stroke="url(#stripeYellow3D)" stroke-width="18" />
-                                    <line x1="267" y1="289" x2="275" y2="300" stroke="url(#stripeOrange3D)" stroke-width="18" />
-                                    <line x1="277" y1="303" x2="283" y2="312" stroke="url(#sleeveBlue3D)" stroke-width="18" />
-                                    <!-- Hand -->
-                                    <circle cx="290" cy="322" r="11" fill="url(#skin3D)" />
-                                    <!-- Hand highlight -->
-                                    <circle cx="287" cy="319" r="3" fill="#ffffff" opacity="0.3" />
-                                </g>
-
-                                <!-- HEAD & FACE -->
-                                <g class="head-group" id="headGroup" filter="url(#softShadow3D)">
-                                    <!-- Left Ear -->
-                                    <circle cx="123" cy="180" r="15" fill="url(#skin3D)" />
-                                    <circle cx="123" cy="180" r="9" fill="#f5b387" opacity="0.6" />
-                                    
-                                    <!-- Right Ear -->
-                                    <circle cx="277" cy="180" r="15" fill="url(#skin3D)" />
-                                    <circle cx="277" cy="180" r="9" fill="#f5b387" opacity="0.6" />
-
-                                    <!-- Face base (3D Sphere gradient) -->
-                                    <circle cx="200" cy="180" r="75" fill="url(#skin3D)" />
-
-                                    <!-- Front forehead 3D highlight glow -->
-                                    <path d="M 140 150 A 65 65 0 0 1 260 150 A 75 75 0 0 0 140 150 Z" fill="#ffffff" opacity="0.18" />
-
-                                    <!-- Blush Cheeks (radial fade) -->
-                                    <circle class="blush" cx="148" cy="205" r="13" fill="url(#blush3D)" />
-                                    <circle class="blush" cx="252" cy="205" r="13" fill="url(#blush3D)" />
-
-                                    <!-- Cute 3D Button Nose -->
-                                    <ellipse cx="200" cy="192" rx="7" ry="5" fill="url(#skin3D)" />
-                                    <ellipse cx="200" cy="192" rx="7" ry="5" fill="#ff7a59" opacity="0.15" />
-                                    <!-- Nose highlight glint -->
-                                    <circle cx="198" cy="190" r="1.5" fill="#ffffff" opacity="0.6" />
-
-                                    <!-- Eyes System -->
-                                    <!-- Normal Eyes (Visible by default) -->
-                                    <g class="eyes normal-eyes" id="normalEyes">
-                                        <!-- Left Eye -->
-                                        <g class="eye left-eye">
-                                            <ellipse cx="165" cy="175" rx="15" ry="15" fill="#ffffff" />
-                                            <!-- Iris/Pupil with 3D depth gradient -->
-                                            <ellipse cx="165" cy="175" rx="10" ry="10" fill="url(#pupilBlue3D)" />
-                                            <!-- Catchlights (highlights) -->
-                                            <circle cx="161" cy="171" r="4.2" fill="#ffffff" />
-                                            <circle cx="169" cy="179" r="1.8" fill="#ffffff" opacity="0.8" />
-                                        </g>
-                                        <!-- Right Eye -->
-                                        <g class="eye right-eye">
-                                            <ellipse cx="235" cy="175" rx="15" ry="15" fill="#ffffff" />
-                                            <!-- Iris/Pupil with 3D depth gradient -->
-                                            <ellipse cx="235" cy="175" rx="10" ry="10" fill="url(#pupilBlue3D)" />
-                                            <!-- Catchlights (highlights) -->
-                                            <circle cx="231" cy="171" r="4.2" fill="#ffffff" />
-                                            <circle cx="239" cy="179" r="1.8" fill="#ffffff" opacity="0.8" />
-                                        </g>
-                                    </g>
-
-                                    <!-- Happy/Smiling Eyes (Shown in Gül state) -->
-                                    <g class="eyes happy-eyes" id="happyEyes" style="display: none;">
-                                        <!-- Left squint arc -->
-                                        <path d="M 148 178 Q 165 158 182 178" fill="none" stroke="#212529" stroke-width="5" stroke-linecap="round" />
-                                        <!-- Right squint arc -->
-                                        <path d="M 218 178 Q 235 158 252 178" fill="none" stroke="#212529" stroke-width="5" stroke-linecap="round" />
-                                    </g>
-
-                                    <!-- Crying Eyes (Shown in Ağla state) -->
-                                    <g class="eyes crying-eyes" id="cryingEyes" style="display: none;">
-                                        <!-- Left cry arc -->
-                                        <path d="M 152 172 Q 165 186 178 172" fill="none" stroke="#1d3557" stroke-width="5" stroke-linecap="round" />
-                                        <!-- Right cry arc -->
-                                        <path d="M 222 172 Q 235 186 248 172" fill="none" stroke="#1d3557" stroke-width="5" stroke-linecap="round" />
-                                    </g>
-
-                                    <!-- Eyebrows with 3D volume effect -->
-                                    <g class="eyebrows" id="eyebrows">
-                                        <path class="eyebrow left-eyebrow" d="M 146 151 Q 165 142 184 153" fill="none" stroke="#2a1705" stroke-width="4.5" stroke-linecap="round" />
-                                        <path class="eyebrow right-eyebrow" d="M 216 153 Q 235 142 254 151" fill="none" stroke="#2a1705" stroke-width="4.5" stroke-linecap="round" />
-                                    </g>
-
-                                    <!-- Mouths System -->
-                                    <!-- Normal Mouth (Neutral smile) -->
-                                    <path class="mouth" id="mouthNormal" d="M 183 210 Q 200 228 217 210" fill="none" stroke="#4a2c0f" stroke-width="4.5" stroke-linecap="round" />
-                                    
-                                    <!-- Laughing Mouth (Open wide smile, showing teeth & tongue) -->
-                                    <g class="mouth" id="mouthLaugh" style="display: none;">
-                                        <path d="M 178 205 Q 200 242 222 205 Z" fill="#9b111e" stroke="#4a2c0f" stroke-width="4" stroke-linejoin="round" />
-                                        <!-- Teeth -->
-                                        <path d="M 183 207 Q 200 216 217 207" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
-                                        <!-- Tongue -->
-                                        <path d="M 190 226 Q 200 216 210 226" fill="#ff7a59" />
-                                    </g>
-                                    
-                                    <!-- Crying Mouth (Frown down curve) -->
-                                    <path class="mouth" id="mouthCry" d="M 185 221 Q 200 203 215 221" fill="none" stroke="#4a2c0f" stroke-width="4.5" stroke-linecap="round" style="display: none;" />
-                                    
-                                    <!-- Open Mouth (Surprised/Singing/Speaking, deep 3D mouth cavity) -->
-                                    <g class="mouth" id="mouthOpen" style="display: none;">
-                                        <ellipse cx="200" cy="216" rx="12" ry="18" fill="#291605" stroke="#4a2c0f" stroke-width="3" />
-                                        <!-- Tongue -->
-                                        <path d="M 193 224 C 193 218, 207 218, 207 224 C 207 230, 193 230, 193 224 Z" fill="#ff7a59" opacity="0.9" />
-                                    </g>
-
-                                    <!-- Tears (For crying effect) -->
-                                    <g class="teardrops" id="teardrops" style="display: none;">
-                                        <path class="teardrop tear-left" d="M 165 180 C 158 192, 158 198, 165 208 C 172 198, 172 192, 165 180 Z" fill="#4fc3f7" opacity="0.9" />
-                                        <path class="teardrop tear-right" d="M 235 180 C 228 192, 228 198, 235 208 C 242 198, 242 192, 235 180 Z" fill="#4fc3f7" opacity="0.9" />
-                                    </g>
-
-                                    <!-- Hair (3D Textured brown hair blocks) -->
-                                    <g class="hair" id="hair">
-                                        <!-- Main hair mass -->
-                                        <path d="M 125 150 C 120 95, 280 95, 275 150 C 292 140, 292 118, 275 102 C 250 78, 150 78, 125 102 C 108 118, 108 140, 125 150 Z" fill="url(#hairBrown3D)" />
-                                        
-                                        <!-- Front bangs and sideburns with lighting depth -->
-                                        <path d="M 125 145 L 126 175 L 138 163 L 150 178 L 175 156 L 200 172 L 225 153 L 250 170 L 262 158 L 274 175 L 275 145 Z" fill="url(#hairBrown3D)" />
-                                        
-                                        <!-- Layered spiky overlay highlights (creates depth) -->
-                                        <path d="M 135 125 Q 155 105 185 115 Q 160 135 145 130 Z" fill="#734e36" opacity="0.4" />
-                                        <path d="M 215 125 Q 235 105 265 115 Q 240 135 225 130 Z" fill="#734e36" opacity="0.4" />
-
-                                        <!-- Top spiky strands -->
-                                        <path d="M 170 95 Q 185 73 205 83 Q 190 92 185 93" fill="url(#hairBrown3D)" />
-                                        <path d="M 195 90 Q 215 68 230 81 Q 212 89 205 90" fill="url(#hairBrown3D)" />
-                                    </g>
-                                </g>
-                            </g>
-
-                            <!-- Football (Glossy 3D Soccer Ball sphere) -->
-                            <g class="football-group" id="footballGroup" filter="url(#softShadow3D)">
-                                <!-- Flat soccer ball base -->
-                                <circle cx="310" cy="435" r="22" fill="#ffffff" />
-                                <!-- Pentagon patterns for soccer ball look -->
-                                <polygon points="310,413 318,421 314,430 306,430 302,421" fill="#2d3142" />
-                                <polygon points="295,440 289,447 296,453 303,447 301,440" fill="#2d3142" />
-                                <polygon points="325,440 331,447 324,453 317,447 319,440" fill="#2d3142" />
-                                <polygon points="310,457 317,453 313,445 307,445 303,453" fill="#2d3142" />
-                                <!-- Lines connecting polygons -->
-                                <line x1="310" y1="413" x2="310" y2="422" stroke="#2d3142" stroke-width="1.5" />
-                                <line x1="302" y1="421" x2="295" y2="425" stroke="#2d3142" stroke-width="1.5" />
-                                <line x1="318" y1="421" x2="325" y2="425" stroke="#2d3142" stroke-width="1.5" />
-                                <line x1="306" y1="430" x2="301" y2="440" stroke="#2d3142" stroke-width="1.5" />
-                                <line x1="314" y1="430" x2="319" y2="440" stroke="#2d3142" stroke-width="1.5" />
-                                <line x1="295" y1="440" x2="288" y2="440" stroke="#2d3142" stroke-width="1.5" />
-                                <line x1="325" y1="440" x2="332" y2="440" stroke="#2d3142" stroke-width="1.5" />
-                                
-                                <!-- 3D Glossy Sphere Overlay Layer -->
-                                <circle cx="310" cy="435" r="22" fill="url(#ballShading3D)" style="mix-blend-mode: multiply;" />
-                            </g>
-                        </svg>
-                    </div>
-
-                    <!-- Voice Waveform Animation -->
-                    <div class="mic-wave-container" id="micWaveContainer">
-                        <div class="wave-bar"></div>
-                        <div class="wave-bar"></div>
-                        <div class="wave-bar"></div>
-                        <div class="wave-bar"></div>
-                        <div class="wave-bar"></div>
-                        <div class="wave-bar"></div>
-                        <div class="wave-bar"></div>
-                        <div class="wave-bar"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Side: Controls and Instructions -->
-            <div class="control-section">
-                <!-- Microphone Activation Card -->
-                <div class="mic-card">
-                    <button class="btn-mic" id="btnMic">
-                        <i class="fa-solid fa-microphone mic-icon"></i>
-                        <span id="btnMicText">Dinləmə Aktiv</span>
-                    </button>
-                    <p class="mic-status-label" id="micStatusLabel">
-                        Mikrofon aktiv — əmrləri deyin!
-                    </p>
-                    <!-- Live transcript box -->
-                    <div class="transcript-box" id="transcriptBox" style="display:none;">
-                        <span class="transcript-label">Eşitdim:</span>
-                        <span class="transcript-text" id="transcriptText"></span>
-                    </div>
-                </div>
-
-                <!-- Verb Commands Grid -->
-                <div class="commands-card">
-                    <h3>Hərəkət Düymələri</h3>
-                    <p class="subtitle">Səsli əmrləri deyə və ya aşağıdakı düymələrə klikləyə bilərsiniz:</p>
-                    
-                    <div class="commands-grid">
-                        <button class="btn-command" data-command="otur">
-                            <span class="btn-emoji">🧎‍♂️</span>
-                            <span class="btn-label">Otur</span>
-                        </button>
-                        <button class="btn-command" data-command="dur">
-                            <span class="btn-emoji">🧍‍♂️</span>
-                            <span class="btn-label">Dur</span>
-                        </button>
-                        <button class="btn-command" data-command="gel">
-                            <span class="btn-emoji">🚶‍♂️</span>
-                            <span class="btn-label">Gəl</span>
-                        </button>
-                        <button class="btn-command" data-command="get">
-                            <span class="btn-emoji">🏃‍♂️</span>
-                            <span class="btn-label">Get</span>
-                        </button>
-                        <button class="btn-command" data-command="gul">
-                            <span class="btn-emoji">😄</span>
-                            <span class="btn-label">Gül</span>
-                        </button>
-                        <button class="btn-command" data-command="agla">
-                            <span class="btn-emoji">😢</span>
-                            <span class="btn-label">Ağla</span>
-                        </button>
-                        <button class="btn-command" data-command="agiz-ac">
-                            <span class="btn-emoji">😮</span>
-                            <span class="btn-label">Ağzını aç</span>
-                        </button>
-                        <button class="btn-command" data-command="qulaq-tut">
-                            <span class="btn-emoji">👂</span>
-                            <span class="btn-label">Qulağını tut</span>
-                        </button>
-                        <button class="btn-command" data-command="el-cal">
-                            <span class="btn-emoji">👏</span>
-                            <span class="btn-label">Əl çal</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Instructions Card -->
-                <div class="instructions-card">
-                    <h3>Köməkçi Təlimatlar</h3>
-                    <ul>
-                        <li><i class="fa-solid fa-circle-info"></i> <strong>Səslə idarə:</strong> "Mikrofonu Başlat" düyməsini sıxdıqdan sonra brauzerinizdə mikrofona icazə verin. Şəffaf və anlaşıqlı tərzdə Azərbaycan dilində əmrləri söyləyin.</li>
-                        <li><i class="fa-solid fa-microphone-lines"></i> <strong>Tanınan əmrlər:</strong> "Otur", "Dur", "Gəl", "Get", "Gül", "Ağla" (və ya "Ağlamaq"), "Ağzını aç", "Qulağını tut", "Əl çal".</li>
-                    </ul>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- App JavaScript -->
-    <script src="script.js?v=3.6"></script>
+</div><!-- /app-container -->
+<script src="script.js?v=4.0"></script>
 </body>
 </html>

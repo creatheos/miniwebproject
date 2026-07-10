@@ -1,319 +1,100 @@
-/* character.css */
-
-/* Core Transform Origins for SVG groups */
-#boyCharacter {
-    transform-origin: 200px 450px;
-    transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+/* Shared actions for Ali, Aynur, Kamran and Leyla. */
+.char-wrapper {
+    --x: 0px;
+    --scale: 1;
+    position: absolute;
+    bottom: 7%;
+    width: clamp(88px, 13.5vw, 150px);
+    transform: translateX(var(--x)) scale(var(--scale));
+    transform-origin: center bottom;
+    transition: left 850ms cubic-bezier(.2, .8, .2, 1), bottom 850ms cubic-bezier(.2, .8, .2, 1), transform 850ms cubic-bezier(.2, .8, .2, 1), filter 300ms ease;
+    z-index: 3;
+    text-align: center;
+    filter: drop-shadow(0 10px 7px rgba(27, 66, 25, .2));
 }
 
-#charBodyGroup {
-    transform-origin: 200px 450px;
-    transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+#char-ali { left: 15%; --scale: 1; }
+#char-aynur { left: 37%; --scale: .94; }
+#char-kamran { left: 57%; --scale: .78; }
+#char-leyla { left: 77%; --scale: 1.03; }
+
+.char-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.char-name {
+    display: inline-block;
+    margin-top: -3px;
+    padding: 3px 10px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, .85);
+    color: #253344;
+    font: 800 clamp(.65rem, 1.2vw, .9rem)/1 var(--font-heading);
+    box-shadow: 0 3px 8px rgba(26, 55, 31, .16);
 }
 
-#leftArm {
-    transform-origin: 155px 265px;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
+/* Base movement inside every independent character SVG. */
+.char-wrapper .char-body { transform-origin: 80px 330px; animation: idleBreathe 3.8s ease-in-out infinite; }
+.char-wrapper .left-arm { transform-origin: 45px 175px; transition: transform .35s ease; }
+.char-wrapper .right-arm { transform-origin: 115px 175px; transition: transform .35s ease; }
+.char-wrapper .legs { transform-origin: 80px 275px; transition: transform .45s ease; }
+.char-wrapper .head { transform-origin: 80px 90px; transition: transform .35s ease; }
 
-#rightArm {
-    transform-origin: 245px 265px;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
+@keyframes idleBreathe { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes walkBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+@keyframes armSwingL { 0%,100% { transform: rotate(0); } 50% { transform: rotate(24deg); } }
+@keyframes armSwingR { 0%,100% { transform: rotate(0); } 50% { transform: rotate(-24deg); } }
+@keyframes headGiggle { 0%,100% { transform: rotate(0); } 50% { transform: rotate(4deg) translateY(-2px); } }
+@keyframes clapLeft { 0%,100% { transform: rotate(35deg); } 50% { transform: rotate(70deg) translate(9px, -6px); } }
+@keyframes clapRight { 0%,100% { transform: rotate(-35deg); } 50% { transform: rotate(-70deg) translate(-9px, -6px); } }
 
-#leftLeg {
-    transform-origin: 170px 345px;
-    transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
+/* All friends walk inward onto the centre stone path. */
+.char-wrapper.state-gel { filter: drop-shadow(0 13px 9px rgba(27, 66, 25, .25)); }
+#char-ali.state-gel { --x: 175px; --scale: 1.08; }
+#char-aynur.state-gel { --x: 80px; --scale: 1.02; }
+#char-kamran.state-gel { --x: -75px; --scale: .9; }
+#char-leyla.state-gel { --x: -190px; --scale: 1.11; }
+.char-wrapper.state-gel .char-body, .char-wrapper.state-get .char-body { animation: walkBob .46s ease-in-out infinite; }
+.char-wrapper.state-gel .left-arm, .char-wrapper.state-get .left-arm { animation: armSwingL .46s ease-in-out infinite; }
+.char-wrapper.state-gel .right-arm, .char-wrapper.state-get .right-arm { animation: armSwingR .46s ease-in-out infinite; }
 
-#rightLeg {
-    transform-origin: 230px 345px;
-    transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
+/* Get command sends them outward and makes them appear farther away. */
+#char-ali.state-get { --x: -58px; --scale: .78; }
+#char-aynur.state-get { --x: -26px; --scale: .73; }
+#char-kamran.state-get { --x: 32px; --scale: .63; }
+#char-leyla.state-get { --x: 65px; --scale: .8; }
 
-#headGroup {
-    transform-origin: 200px 240px;
-    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
+/* Bench-side sitting pose. */
+.char-wrapper.state-otur { --scale: .7; bottom: 5%; }
+#char-ali.state-otur { left: 7%; --x: 0; }
+#char-aynur.state-otur { left: 14%; --x: 0; }
+#char-kamran.state-otur { left: 21%; --x: 0; }
+#char-leyla.state-otur { left: 28%; --x: 0; }
+.char-wrapper.state-otur .char-body { transform: translateY(35px) scaleY(.9); animation: none; }
+.char-wrapper.state-otur .legs { transform: rotateX(58deg) translateY(-15px); }
+.char-wrapper.state-otur .left-arm { transform: rotate(30deg); }
+.char-wrapper.state-otur .right-arm { transform: rotate(-30deg); }
 
-/* -------------------------------------------------------------
-   DEFAULT / IDLE STATE (Standing + Breathing + Blinking)
-------------------------------------------------------------- */
-#charBodyGroup {
-    animation: idleBreathe 4s ease-in-out infinite;
-}
+.char-wrapper.state-gul .char-body { animation: walkBob .3s ease-in-out infinite; }
+.char-wrapper.state-gul .head { animation: headGiggle .3s ease-in-out infinite; }
+.char-wrapper.state-gul .left-arm { transform: rotate(45deg); }
+.char-wrapper.state-gul .right-arm { transform: rotate(-45deg); }
+.char-wrapper.state-agla .char-body { animation: walkBob 1.2s ease-in-out infinite; }
+.char-wrapper.state-agla .head { transform: rotate(5deg) translateY(4px); }
+.char-wrapper.state-qulaq-tut .left-arm { transform: rotate(112deg) translate(8px, -18px); }
+.char-wrapper.state-qulaq-tut .right-arm { transform: rotate(-112deg) translate(-8px, -18px); }
+.char-wrapper.state-el-cal .char-body { animation: walkBob .6s ease-in-out infinite; }
+.char-wrapper.state-el-cal .left-arm { animation: clapLeft .3s ease-in-out infinite; }
+.char-wrapper.state-el-cal .right-arm { animation: clapRight .3s ease-in-out infinite; }
 
-/* Blinking Eyes (ScaleY of pupils and eye whites) */
-.left-eye, .right-eye {
-    transform-origin: 165px 175px;
-    animation: eyeBlink 5s infinite;
-}
-.right-eye {
-    transform-origin: 235px 175px;
-}
+/* Shared face variants. */
+.char-wrapper .happy-eyes, .char-wrapper .crying-eyes, .char-wrapper .mouth-laugh, .char-wrapper .mouth-cry, .char-wrapper .mouth-open, .char-wrapper .teardrops { display: none; }
+.char-wrapper.face-happy .normal-eyes, .char-wrapper.face-crying .normal-eyes { display: none; }
+.char-wrapper.face-happy .happy-eyes, .char-wrapper.face-happy .mouth-laugh { display: block !important; }
+.char-wrapper.face-happy .mouth-normal, .char-wrapper.face-crying .mouth-normal, .char-wrapper.face-open .mouth-normal { display: none; }
+.char-wrapper.face-crying .crying-eyes, .char-wrapper.face-crying .mouth-cry, .char-wrapper.face-crying .teardrops, .char-wrapper.face-open .mouth-open { display: block !important; }
 
-@keyframes idleBreathe {
-    0%, 100% {
-        transform: translateY(0) scaleY(1);
-    }
-    50% {
-        transform: translateY(-4px) scaleY(1.01);
-    }
-}
-
-@keyframes eyeBlink {
-    0%, 96%, 100% {
-        transform: scaleY(1);
-    }
-    98% {
-        transform: scaleY(0.1);
-    }
-}
-
-/* -------------------------------------------------------------
-   OTUR STATE (Sit Down)
-------------------------------------------------------------- */
-#boyCharacter.state-otur #charBodyGroup {
-    transform: translateY(65px);
-}
-
-#boyCharacter.state-otur #leftLeg {
-    transform: rotate(-65deg) translate(-10px, -15px);
-}
-
-#boyCharacter.state-otur #rightLeg {
-    transform: rotate(65deg) translate(10px, -15px);
-}
-
-#boyCharacter.state-otur #leftArm {
-    transform: rotate(30deg);
-}
-
-#boyCharacter.state-otur #rightArm {
-    transform: rotate(-30deg);
-}
-
-#boyCharacter.state-otur .shadow {
-    transform: scale(1.2);
-    transform-origin: 200px 455px;
-    transition: transform 0.6s ease;
-}
-
-/* -------------------------------------------------------------
-   GƏL STATE (Come Closer / Walk Animation)
-------------------------------------------------------------- */
-#boyCharacter.state-gel {
-    transform: scale(1.25) translateY(20px);
-}
-
-#boyCharacter.state-gel #leftLeg {
-    animation: walkSwingLeft 0.5s linear infinite;
-}
-
-#boyCharacter.state-gel #rightLeg {
-    animation: walkSwingRight 0.5s linear infinite;
-}
-
-#boyCharacter.state-gel #charBodyGroup {
-    animation: walkBob 0.5s ease-in-out infinite;
-}
-
-#boyCharacter.state-gel #leftArm {
-    transform: rotate(25deg);
-}
-
-#boyCharacter.state-gel #rightArm {
-    transform: rotate(-25deg);
-}
-
-/* -------------------------------------------------------------
-   GET STATE (Go Back / Slower Walk Animation)
-------------------------------------------------------------- */
-#boyCharacter.state-get {
-    transform: scale(0.75) translateY(-30px);
-}
-
-#boyCharacter.state-get #leftLeg {
-    animation: walkSwingLeft 0.7s linear infinite;
-}
-
-#boyCharacter.state-get #rightLeg {
-    animation: walkSwingRight 0.7s linear infinite;
-}
-
-#boyCharacter.state-get #charBodyGroup {
-    animation: walkBob 0.7s ease-in-out infinite;
-}
-
-#boyCharacter.state-get #leftArm {
-    transform: rotate(15deg);
-}
-
-#boyCharacter.state-get #rightArm {
-    transform: rotate(-15deg);
-}
-
-/* Walk Sub-Animations */
-@keyframes walkSwingLeft {
-    0%, 100% { transform: rotate(0deg); }
-    25% { transform: rotate(25deg); }
-    75% { transform: rotate(-25deg); }
-}
-
-@keyframes walkSwingRight {
-    0%, 100% { transform: rotate(0deg); }
-    25% { transform: rotate(-25deg); }
-    75% { transform: rotate(25deg); }
-}
-
-@keyframes walkBob {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-8px) rotate(-1deg); }
-}
-
-/* -------------------------------------------------------------
-   GÜL STATE (Smile / Laugh)
-------------------------------------------------------------- */
-#boyCharacter.state-gul #normalEyes { display: none !important; }
-#boyCharacter.state-gul #happyEyes { display: block !important; }
-#boyCharacter.state-gul #mouthNormal { display: none !important; }
-#boyCharacter.state-gul #mouthLaugh { display: block !important; }
-
-#boyCharacter.state-gul #headGroup {
-    animation: laughShakeHead 0.3s ease-in-out infinite;
-}
-
-#boyCharacter.state-gul #charBodyGroup {
-    animation: laughShakeBody 0.3s ease-in-out infinite;
-}
-
-#boyCharacter.state-gul #leftArm { transform: rotate(45deg); }
-#boyCharacter.state-gul #rightArm { transform: rotate(-45deg); }
-
-@keyframes laughShakeHead {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-3px) rotate(2deg); }
-}
-
-@keyframes laughShakeBody {
-    0%, 100% { transform: translateY(0) scaleY(1); }
-    50% { transform: translateY(-2px) scaleY(1.02); }
-}
-
-/* -------------------------------------------------------------
-   AĞLA STATE (Cry / Teardrops)
-------------------------------------------------------------- */
-#boyCharacter.state-agla #normalEyes { display: none !important; }
-#boyCharacter.state-agla #cryingEyes { display: block !important; }
-#boyCharacter.state-agla #mouthNormal { display: none !important; }
-#boyCharacter.state-agla #mouthCry { display: block !important; }
-#boyCharacter.state-agla #teardrops { display: block !important; }
-
-#boyCharacter.state-agla #headGroup {
-    transform: rotate(5deg) translateY(4px);
-}
-
-#boyCharacter.state-agla #charBodyGroup {
-    animation: crySob 1.5s ease-in-out infinite;
-}
-
-#boyCharacter.state-agla #leftArm {
-    transform: rotate(15deg);
-}
-#boyCharacter.state-agla #rightArm {
-    transform: rotate(-15deg);
-}
-
-/* Tear animations */
-.tear-left, .tear-right {
-    animation: tearFall 1.8s infinite linear;
-}
-.tear-right {
-    animation-delay: 0.9s;
-}
-
-@keyframes crySob {
-    0%, 100% { transform: translateY(0); }
-    40%, 45% { transform: translateY(-4px) scaleY(1.01); }
-    50% { transform: translateY(1px) scaleY(0.99); }
-}
-
-@keyframes tearFall {
-    0% {
-        transform: translateY(0) scale(0.5);
-        opacity: 0;
-    }
-    10% {
-        opacity: 1;
-        transform: translateY(5px) scale(1);
-    }
-    80% {
-        opacity: 1;
-        transform: translateY(55px) scale(0.9);
-    }
-    100% {
-        opacity: 0;
-        transform: translateY(65px) scale(0.3);
-    }
-}
-
-/* -------------------------------------------------------------
-   AĞZINI AÇ STATE (Open Mouth)
-------------------------------------------------------------- */
-#boyCharacter.state-agiz-ac #mouthNormal { display: none !important; }
-#boyCharacter.state-agiz-ac #mouthOpen { display: block !important; }
-
-#boyCharacter.state-agiz-ac #headGroup {
-    transform: rotate(-3deg) translateY(-2px);
-}
-
-/* -------------------------------------------------------------
-   QULAQ TUT STATE (Touch Ears)
-------------------------------------------------------------- */
-/* Left hand touches left ear, Right hand touches right ear */
-#boyCharacter.state-qulaq-tut #leftArm {
-    transform: rotate(125deg) translate(8px, -20px);
-}
-
-#boyCharacter.state-qulaq-tut #rightArm {
-    transform: rotate(-125deg) translate(-8px, -20px);
-}
-
-#boyCharacter.state-qulaq-tut #headGroup {
-    animation: headNudge 1.5s ease-in-out infinite;
-}
-
-@keyframes headNudge {
-    0%, 100% { transform: rotate(0deg); }
-    50% { transform: rotate(2deg) scale(1.02); }
-}
-
-/* -------------------------------------------------------------
-   ƏL ÇAL STATE (Clap Hands)
-------------------------------------------------------------- */
-#boyCharacter.state-el-cal #leftArm {
-    animation: clapLeftArm 0.3s ease-in-out infinite;
-}
-
-#boyCharacter.state-el-cal #rightArm {
-    animation: clapRightArm 0.3s ease-in-out infinite;
-}
-
-#boyCharacter.state-el-cal #charBodyGroup {
-    animation: clapBounce 0.6s ease-in-out infinite;
-}
-
-@keyframes clapLeftArm {
-    0%, 100% { transform: rotate(45deg); }
-    50% { transform: rotate(70deg) translate(10px, -5px); }
-}
-
-@keyframes clapRightArm {
-    0%, 100% { transform: rotate(-45deg); }
-    50% { transform: rotate(-70deg) translate(-10px, -5px); }
-}
-
-@keyframes clapBounce {
-    0%, 100% { transform: translateY(0) scaleY(1); }
-    50% { transform: translateY(-5px) scaleY(1.03); }
+@media (max-width: 700px) {
+    .char-wrapper { width: clamp(62px, 20vw, 104px); bottom: 8%; }
+    #char-ali { left: 7%; } #char-aynur { left: 31%; } #char-kamran { left: 54%; } #char-leyla { left: 75%; }
+    #char-ali.state-gel { --x: 85px; } #char-aynur.state-gel { --x: 38px; }
+    #char-kamran.state-gel { --x: -36px; } #char-leyla.state-gel { --x: -92px; }
+    .char-wrapper.state-otur { width: clamp(48px, 15vw, 72px); }
 }
