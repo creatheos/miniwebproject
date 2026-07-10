@@ -185,7 +185,19 @@ function updateFace(state) {
     }
 }
 
+let resetTimer = null;
+
+function resetToIdle() {
+    boyChar.className.baseVal = '';
+    updateFace('idle');
+    cmdBtns.forEach(b => b.classList.remove('active-command'));
+    speechBubble.textContent = 'Növbəti əmrini gözləyirəm! 😊';
+}
+
 function triggerAction(name) {
+    // Cancel any pending reset
+    if (resetTimer) { clearTimeout(resetTimer); resetTimer = null; }
+
     // Highlight active button
     cmdBtns.forEach(b => b.classList.toggle('active-command', b.dataset.command === name));
 
@@ -204,19 +216,10 @@ function triggerAction(name) {
     // Sound
     if (soundEffects[name]) soundEffects[name]();
 
-    // Auto-reset after animation
-    if (['gul','agla','agiz-ac','qulaq-tut','el-cal'].includes(name)) {
-        const delay = name === 'agla' ? 2200 : 1600;
-        setTimeout(() => {
-            const active = document.querySelector('.btn-command.active-command');
-            if (active && active.dataset.command === name) {
-                boyChar.className.baseVal = '';
-                updateFace('idle');
-                active.classList.remove('active-command');
-                speechBubble.textContent = 'Növbəti əmrini gözləyirəm! 😊';
-            }
-        }, delay);
-    }
+    // Auto-reset ALL actions back to idle after a short delay
+    const delays = { agla: 2200, gel: 2000, get: 2000, otur: 2000 };
+    const delay = delays[name] || 1800;
+    resetTimer = setTimeout(resetToIdle, delay);
 }
 
 // ─── COMMAND MATCHING ─────────────────────────────────────
