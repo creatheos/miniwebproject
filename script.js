@@ -268,14 +268,26 @@ function stopVisualizer() {
 }
 
 // ─── SPEECH RECOGNITION ───────────────────────────────────
+let lastTriggerTime = 0;
+const TRIGGER_LOCKOUT_MS = 1500; // Ignore new triggers for 1.5s after matching a command
+
+function tryTriggerAction(command) {
+    const now = Date.now();
+    if (now - lastTriggerTime < TRIGGER_LOCKOUT_MS) {
+        return;
+    }
+    lastTriggerTime = now;
+    triggerAction(command);
+}
+
 function buildRecognition() {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) return null;
 
     const r = new SR();
-    r.continuous      = false;  // false = most stable on mobile
-    r.interimResults  = false;  // false = only fire when sentence complete
-    r.maxAlternatives = 5;      // check up to 5 interpretations
+    r.continuous      = true;  // continuous mode for real-time stream matching
+    r.interimResults  = true;  // interimResults true triggers results instantly as spoken
+    r.maxAlternatives = 3;      
     r.lang            = 'az-AZ';
     return r;
 }
@@ -297,15 +309,22 @@ function attachHandlers() {
 
     recognition.onerror = (e) => {
         console.warn('[Voice] error:', e.error);
-        if (e.error === 'no-speech') return; // silence – keep going
+        if (e.error === 'no-speech') return; // silence - keep going
+        
+        let msg = 'Səs tanıma xətası: ' + e.error;
         if (e.error === 'not-allowed') {
-            stopListening();
-            micStatusLabel.textContent = 'Mikrofona icazə verilmədi!';
-            micStatusLabel.style.color = 'var(--error)';
-            return;
+            msg = 'Mikrofona icazə rədd edildi! Zəhmət olmasa ayarlardan icazə verin.';
+        } else if (e.error === 'network') {
+            msg = 'İnternet xətası! Səs tanıma üçün aktiv internet lazımdır.';
+        } else if (e.error === 'language-not-supported') {
+            msg = 'Cihazınız Azərbaycan dilində səs tanımayı dəstəkləmir.';
+        } else if (e.error === 'service-not-allowed') {
+            msg = 'Səs xidmətinə icazə verilmir (Ehtimal ki, təhlükəsiz olmayan bağlantı).';
         }
-        // For other errors, just log and keep listening
-        console.warn('Non-fatal SR error:', e.error);
+        
+        stopListening();
+        micStatusLabel.textContent = msg;
+        micStatusLabel.style.color = 'var(--error)';
     };
 
     recognition.onend = () => {
@@ -325,20 +344,28 @@ function attachHandlers() {
     };
 
     recognition.onresult = (e) => {
-        // Try all alternatives (most confident first)
-        for (let a = 0; a < e.results[0].length; a++) {
-            const alt = e.results[0][a].transcript;
-            console.log(`[Voice] alt${a}: "${alt}"`);
-            const cmd = matchCommand(alt);
-            if (cmd) {
-                triggerAction(cmd);
-                return;
+        let transcriptTextFound = '';
+        
+        // Loop through all results (both interim and final)
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+            const result = e.results[i];
+            transcriptTextFound = result[0].transcript;
+            
+            // Test alternatives for commands
+            for (let a = 0; a < result.length; a++) {
+                const alt = result[a].transcript;
+                const cmd = matchCommand(alt);
+                if (cmd) {
+                    tryTriggerAction(cmd);
+                    txText.textContent = alt;
+                    return; // Command matched, exit loop
+                }
             }
         }
-        // Nothing matched – show what we heard
-        const heard = e.results[0][0].transcript;
-        txText.textContent = heard;
-        speechBubble.textContent = `"${heard}" — tanımadım 🤔`;
+        
+        if (transcriptTextFound) {
+            txText.textContent = transcriptTextFound;
+        }
     };
 }
 
