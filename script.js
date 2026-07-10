@@ -425,7 +425,7 @@ function setupSpeechRecognition() {
     }
 
     recognition = new SpeechRecognition();
-    recognition.continuous = false; // continuous=false is much more reliable on Mobile Safari and Android Chrome
+    recognition.continuous = true; // Use continuous mode to keep the session alive naturally
     recognition.interimResults = false;
     recognition.lang = 'az-AZ';
 
@@ -434,6 +434,7 @@ function setupSpeechRecognition() {
         btnMic.classList.add('listening');
         btnMicText.textContent = "Dinləyirəm... (Dayandır)";
         micStatusLabel.textContent = "Danışın... Azərbaycan dilində əmrləri tanıyıram.";
+        micStatusLabel.style.color = "var(--text-secondary)";
         statusIndicator.querySelector('.status-dot').style.backgroundColor = '#ef4444';
         statusIndicator.querySelector('.status-dot').style.boxShadow = '0 0 8px #ef4444';
         statusIndicator.querySelector('.status-text').textContent = "Dinləyir";
@@ -454,28 +455,32 @@ function setupSpeechRecognition() {
         } else if (event.error === 'audio-capture') {
             errorMessage = "Mikrofon tapılmadı və ya digər proqram tərəfindən istifadə olunur.";
         } else if (event.error === 'no-speech') {
-            // Silence detected, no need to show alert
+            // Silence detected, skip
             return;
         }
         
+        stopListening();
         micStatusLabel.textContent = errorMessage;
         micStatusLabel.style.color = "var(--error)";
-        stopListening();
     };
 
     recognition.onend = () => {
         // Automatically restart speech recognition with a small delay if user still has listening mode toggled on.
-        // This simulates continuous recognition stably on mobile/tablet platforms.
+        // On iOS Safari, auto-restart is blocked without user gesture. We wrap it in a try-catch to handle e.g. NotAllowedError.
         if (isListening) {
             setTimeout(() => {
                 if (isListening) {
                     try {
                         recognition.start();
                     } catch (e) {
-                        console.error("Failed to restart speech recognition:", e);
+                        console.warn("Failed to auto-restart speech recognition:", e);
+                        // Safe fallback for gesture-restricted environments (like Safari)
+                        stopListening();
+                        micStatusLabel.textContent = "Səsli idarəetmə dayandı. Yenidən başlatmaq üçün düyməyə klikləyin.";
+                        micStatusLabel.style.color = "var(--text-secondary)";
                     }
                 }
-            }, 300);
+            }, 350);
         }
     };
 
