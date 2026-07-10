@@ -15,6 +15,20 @@
     <link rel="stylesheet" href="character.css">
 </head>
 <body>
+    <!-- Full-Screen Start Overlay (shown on load, tap triggers mic permission) -->
+    <div class="start-overlay" id="startOverlay">
+        <div class="start-overlay-card">
+            <div class="overlay-character">🧒</div>
+            <h2>Şirin Dostum</h2>
+            <p>Mən dediyiniz əmrləri yerinə yetirəcəyəm!</p>
+            <button class="btn-start-overlay" id="btnStartOverlay">
+                <i class="fa-solid fa-microphone"></i>
+                Başlamaq üçün toxun!
+            </button>
+            <p class="overlay-hint">Mikrofona icazə verin, sonra əmrləri deyin</p>
+        </div>
+    </div>
+
     <div class="app-container">
         <!-- Header -->
         <header class="app-header">
@@ -250,11 +264,16 @@
                 <div class="mic-card">
                     <button class="btn-mic" id="btnMic">
                         <i class="fa-solid fa-microphone mic-icon"></i>
-                        <span id="btnMicText">Səslə İdarəni Başlat</span>
+                        <span id="btnMicText">Dinləmə Aktiv</span>
                     </button>
                     <p class="mic-status-label" id="micStatusLabel">
-                        Danışmaq üçün yuxarıdakı düyməyə klikləyin.
+                        Mikrofon aktiv — əmrləri deyin!
                     </p>
+                    <!-- Live transcript box -->
+                    <div class="transcript-box" id="transcriptBox" style="display:none;">
+                        <span class="transcript-label">Eşitdim:</span>
+                        <span class="transcript-text" id="transcriptText"></span>
+                    </div>
                 </div>
 
                 <!-- Verb Commands Grid -->
@@ -315,6 +334,6 @@
     </div>
 
     <!-- App JavaScript -->
-    <script src="script.js?v=1.0.2"></script>
+    <script src="script.js?v=2.0"></script>
 </body>
 </html>

@@ -4,12 +4,12 @@
 let recognition = null;
 let isListening = false;
 let audioCtx = null;
-let streamCtx = null;
-let audioStream = null;
-let analyser = null;
-let dataArray = null;
 let visualizerActive = false;
-let fallbackInterval = null;
+
+// Language fallback chain — tries az-AZ first, if fails goes to az, then tr, then en-US
+const LANG_CHAIN = ['az-AZ', 'az', 'tr-TR', 'en-US'];
+let langIndex = 0;
+let langFailed = false;
 
 // DOM Elements
 const btnMic = document.getElementById('btnMic');
@@ -20,6 +20,10 @@ const speechBubble = document.getElementById('speechBubble');
 const boyCharacter = document.getElementById('boyCharacter');
 const micWaveContainer = document.getElementById('micWaveContainer');
 const commandButtons = document.querySelectorAll('.btn-command');
+const startOverlay = document.getElementById('startOverlay');
+const btnStartOverlay = document.getElementById('btnStartOverlay');
+const transcriptBox = document.getElementById('transcriptBox');
+const transcriptText = document.getElementById('transcriptText');
 
 // SVG Mouth Elements
 const mouthNormal = document.getElementById('mouthNormal');
@@ -348,7 +352,34 @@ function triggerAction(actionName) {
     }
 }
 
-// Command Parsing Logic (Azerbaijani Matcher)
+// Helper: try to match a transcript and trigger action. Returns true if matched.
+function tryParseCommand(transcript) {
+    let text = transcript.toLowerCase().trim();
+    text = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "");
+
+    if (text.includes("otur") || text.includes("əyləş") || text.includes("cök") || text.includes("çök") || text.includes("oturasan")) {
+        triggerAction('otur'); return true;
+    } else if (text.includes("dur") || text.includes("ayağa qalx") || text.includes("ayaqa qalx") || text.includes("qalx")) {
+        triggerAction('dur'); return true;
+    } else if (text.includes("gəl") || text.includes("gel") || text.includes("yaxınlaş") || text.includes("yaxinlas")) {
+        triggerAction('gel'); return true;
+    } else if (text.includes("get") || text.includes("uzaqlaş") || text.includes("uzaqlas")) {
+        triggerAction('get'); return true;
+    } else if (text.includes("gül") || text.includes("gul") || text.includes("gülümsə") || text.includes("gulumse") || text.includes("gülmək")) {
+        triggerAction('gul'); return true;
+    } else if (text.includes("ağla") || text.includes("agla") || text.includes("ağlamaq") || text.includes("aglamaq")) {
+        triggerAction('agla'); return true;
+    } else if (text.includes("ağzını aç") || text.includes("agzini ac") || text.includes("ağzı aç") || text.includes("agzi ac") || text === "aç" || text === "ac") {
+        triggerAction('agiz-ac'); return true;
+    } else if (text.includes("qulağını tut") || text.includes("qulagini tut") || text.includes("qulaq") || text === "tut") {
+        triggerAction('qulaq-tut'); return true;
+    } else if (text.includes("əl çal") || text.includes("el cal") || text.includes("əlçal") || text.includes("elcal") || text.includes("alqış") || text.includes("alqis") || text === "çal" || text === "cal") {
+        triggerAction('el-cal'); return true;
+    }
+    return false;
+}
+
+// Command Parsing Logic (calls tryParseCommand, shows fallback bubble if unrecognized)
 function parseVoiceCommand(transcript) {
     // Convert to lowercase, trim and strip standard punctuation (.,?! etc.)
     let text = transcript.toLowerCase().trim();
@@ -417,69 +448,93 @@ function stopVisualizer() {
 }
 
 // Speech Recognition Initialization
-function setupSpeechRecognition() {
+function setupSpeechRecognition(langIdx = 0) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     
     if (!SpeechRecognition) {
-        micStatusLabel.textContent = "Cihazınız səs tanıma funksiyasını dəstəkləmir. Hərəkət düymələrini istifadə edin.";
+        micStatusLabel.textContent = "Cihazınız səs tanıma funksiyalasını dəstəkləmir.";
         btnMic.style.display = 'none';
         return;
     }
 
+    // Clean up previous recognition
+    if (recognition) {
+        try { recognition.abort(); } catch(e) {}
+    }
+
     recognition = new SpeechRecognition();
-    recognition.continuous = true; // Use continuous mode to keep the session alive naturally
-    recognition.interimResults = false;
-    recognition.lang = 'az-AZ';
+    recognition.continuous = true;
+    recognition.interimResults = true; // Hear results as they come in
+    recognition.lang = LANG_CHAIN[langIdx] || 'az-AZ';
+    recognition.maxAlternatives = 3; // Consider multiple interpretations
+
+    console.log("Using recognition language:", recognition.lang);
 
     recognition.onstart = () => {
         isListening = true;
+        langFailed = false;
         btnMic.classList.add('listening');
         btnMicText.textContent = "Dinləyirəm... (Dayandır)";
-        micStatusLabel.textContent = "Danışın... Azərbaycan dilində əmrləri tanıyıram.";
+        micStatusLabel.textContent = "İndi danışmaq olar — əmri deyin!";
         micStatusLabel.style.color = "var(--text-secondary)";
         statusIndicator.querySelector('.status-dot').style.backgroundColor = '#ef4444';
         statusIndicator.querySelector('.status-dot').style.boxShadow = '0 0 8px #ef4444';
         statusIndicator.querySelector('.status-text').textContent = "Dinləyir";
         micWaveContainer.classList.add('listening');
+        transcriptBox.style.display = 'flex';
+        transcriptText.textContent = '...';
         startVisualizer();
     };
 
     recognition.onerror = (event) => {
         console.error("Speech Recognition Error:", event.error);
         
-        let errorMessage = "Xəta baş verdi: " + event.error;
+        if (event.error === 'language-not-supported' || event.error === 'service-not-allowed') {
+            // Try next language in chain
+            const nextIdx = langIdx + 1;
+            if (nextIdx < LANG_CHAIN.length) {
+                console.log("Language not supported, trying:", LANG_CHAIN[nextIdx]);
+                micStatusLabel.textContent = `Dil dəyişdirilir... (${LANG_CHAIN[nextIdx]})`;
+                setupSpeechRecognition(nextIdx);
+                startListening();
+                return;
+            }
+        }
+        
         if (event.error === 'not-allowed') {
-            errorMessage = "Mikrofona icazə rədd edildi. Zəhmət olmasa ayarlardan mikrofona icazə verin.";
-        } else if (event.error === 'service-not-allowed') {
-            errorMessage = "Səs tanıma xidmətinə icazə verilmir (Ehtimal ki, təhlükəsiz olmayan HTTP bağlantısı fəaliyyət göstərir).";
-        } else if (event.error === 'network') {
-            errorMessage = "İnternet xətası! Səs tanıma üçün internet əlaqəsi mütləqdir.";
-        } else if (event.error === 'audio-capture') {
-            errorMessage = "Mikrofon tapılmadı və ya digər proqram tərəfindən istifadə olunur.";
-        } else if (event.error === 'no-speech') {
-            // Silence detected, skip
+            stopListening();
+            micStatusLabel.textContent = "Mikrofona icazə verilmədi. Ayarlardan mikrofona icazə verin.";
+            micStatusLabel.style.color = "var(--error)";
             return;
         }
         
-        stopListening();
-        micStatusLabel.textContent = errorMessage;
-        micStatusLabel.style.color = "var(--error)";
+        if (event.error === 'no-speech') {
+            return; // Silence, ignore
+        }
+        
+        if (event.error === 'audio-capture') {
+            stopListening();
+            micStatusLabel.textContent = "Mikrofon tapılmadı və ya başqa proqram istifadə edir.";
+            micStatusLabel.style.color = "var(--error)";
+            return;
+        }
+        
+        if (event.error === 'network') {
+            micStatusLabel.textContent = "İnternet xətası — səs tanıma üçün internet lazımdır.";
+            micStatusLabel.style.color = "var(--error)";
+        }
     };
 
     recognition.onend = () => {
-        // Automatically restart speech recognition with a small delay if user still has listening mode toggled on.
-        // On iOS Safari, auto-restart is blocked without user gesture. We wrap it in a try-catch to handle e.g. NotAllowedError.
         if (isListening) {
             setTimeout(() => {
                 if (isListening) {
                     try {
                         recognition.start();
                     } catch (e) {
-                        console.warn("Failed to auto-restart speech recognition:", e);
-                        // Safe fallback for gesture-restricted environments (like Safari)
+                        console.warn("Auto-restart failed:", e);
                         stopListening();
-                        micStatusLabel.textContent = "Səsli idarəetmə dayandı. Yenidən başlatmaq üçün düyməyə klikləyin.";
-                        micStatusLabel.style.color = "var(--text-secondary)";
+                        micStatusLabel.textContent = "Dinləmə dayandı. Yenidən başlatmaq üçün düyməyə toxunun.";
                     }
                 }
             }, 350);
@@ -487,14 +542,41 @@ function setupSpeechRecognition() {
     };
 
     recognition.onresult = (event) => {
-        const lastResultIndex = event.results.length - 1;
-        const transcript = event.results[lastResultIndex][0].transcript;
-        parseVoiceCommand(transcript);
+        let interimText = '';
+        let finalText = '';
+        
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            const result = event.results[i];
+            if (result.isFinal) {
+                // Collect all alternatives and pick one that matches
+                let matched = false;
+                for (let a = 0; a < result.length; a++) {
+                    const alt = result[a].transcript;
+                    console.log(`Alt ${a}: "${alt}" (${Math.round(result[a].confidence * 100)}%)`);
+                    if (tryParseCommand(alt)) {
+                        finalText = alt;
+                        matched = true;
+                        break;
+                    }
+                }
+                if (!matched) {
+                    finalText = result[0].transcript;
+                    parseVoiceCommand(finalText);
+                }
+            } else {
+                interimText = result[0].transcript;
+            }
+        }
+        
+        const displayText = finalText || interimText;
+        if (displayText) {
+            transcriptText.textContent = displayText;
+        }
     };
 }
 
 function startListening() {
-    initAudio(); // Initialize audio context on click user gesture
+    initAudio();
     if (recognition) {
         try {
             recognition.start();
@@ -514,8 +596,9 @@ function stopListening() {
         }
     }
     btnMic.classList.remove('listening');
-    btnMicText.textContent = "Səslə İdarəni Başlat";
-    micStatusLabel.textContent = "Danışmaq üçün yuxarıdakı düyməyə klikləyin.";
+    btnMicText.textContent = "Dinləmə Aktiv";
+    micStatusLabel.textContent = "Dinləmə dayandı — düyməyə toxunun.";
+    micStatusLabel.style.color = "var(--text-secondary)";
     statusIndicator.querySelector('.status-dot').style.backgroundColor = 'var(--success)';
     statusIndicator.querySelector('.status-dot').style.boxShadow = '0 0 8px var(--success)';
     statusIndicator.querySelector('.status-text').textContent = "Hazırdır";
@@ -540,7 +623,21 @@ commandButtons.forEach(btn => {
     });
 });
 
-// Initialize on page load
+// Overlay button — user's first gesture, mic is auto-started
+btnStartOverlay.addEventListener('click', () => {
+    // Hide overlay with animation
+    startOverlay.classList.add('hidden');
+    setTimeout(() => {
+        startOverlay.style.display = 'none';
+    }, 500);
+    
+    // Initialize and immediately start speech recognition
+    initAudio();
+    setupSpeechRecognition(0);
+    startListening();
+});
+
+// Initialize on page load — setup recognition but don't start (wait for overlay tap)
 window.addEventListener('DOMContentLoaded', () => {
-    setupSpeechRecognition();
+    setupSpeechRecognition(0);
 });

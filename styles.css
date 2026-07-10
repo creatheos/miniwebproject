@@ -460,3 +460,129 @@ body {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+/* ============================================================
+   FULL-SCREEN START OVERLAY
+============================================================ */
+.start-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: linear-gradient(135deg, #1e40af 0%, #7c3aed 50%, #db2777 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: overlayFadeIn 0.4s ease;
+}
+
+.start-overlay.hidden {
+    animation: overlayFadeOut 0.5s ease forwards;
+    pointer-events: none;
+}
+
+.start-overlay-card {
+    text-align: center;
+    color: #ffffff;
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    max-width: 360px;
+}
+
+.overlay-character {
+    font-size: 5rem;
+    animation: floatLogo 2s ease-in-out infinite;
+    line-height: 1;
+}
+
+.start-overlay-card h2 {
+    font-family: var(--font-heading);
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin: 0;
+}
+
+.start-overlay-card p {
+    font-size: 1.05rem;
+    opacity: 0.88;
+    font-weight: 500;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.btn-start-overlay {
+    background: #ffffff;
+    color: #7c3aed;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-family: var(--font-ui);
+    font-size: 1.25rem;
+    font-weight: 800;
+    padding: 20px 40px;
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    animation: pulseBtn 2s ease-in-out infinite;
+}
+
+.btn-start-overlay:hover, .btn-start-overlay:active {
+    transform: scale(0.96);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.overlay-hint {
+    font-size: 0.82rem !important;
+    opacity: 0.65 !important;
+}
+
+@keyframes overlayFadeIn {
+    from { opacity: 0; transform: scale(1.04); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes overlayFadeOut {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.96); }
+}
+
+@keyframes pulseBtn {
+    0%, 100% { box-shadow: 0 12px 40px rgba(0,0,0,0.25), 0 0 0 0 rgba(255,255,255,0.4); }
+    50% { box-shadow: 0 12px 40px rgba(0,0,0,0.25), 0 0 0 16px rgba(255,255,255,0); }
+}
+
+/* ============================================================
+   LIVE TRANSCRIPT BOX
+============================================================ */
+.transcript-box {
+    background: rgba(14, 165, 233, 0.08);
+    border: 1.5px solid rgba(14, 165, 233, 0.3);
+    border-radius: 12px;
+    padding: 8px 14px;
+    font-size: 0.88rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 4px;
+    min-height: 36px;
+}
+
+.transcript-label {
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+    font-size: 0.8rem;
+}
+
+.transcript-text {
+    color: var(--text-primary);
+    font-weight: 500;
+    font-style: italic;
+}
