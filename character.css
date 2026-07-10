@@ -1,0 +1,319 @@
+/* character.css */
+
+/* Core Transform Origins for SVG groups */
+#boyCharacter {
+    transform-origin: 200px 450px;
+    transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+#charBodyGroup {
+    transform-origin: 200px 450px;
+    transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+#leftArm {
+    transform-origin: 155px 265px;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#rightArm {
+    transform-origin: 245px 265px;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#leftLeg {
+    transform-origin: 170px 345px;
+    transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+#rightLeg {
+    transform-origin: 230px 345px;
+    transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+#headGroup {
+    transform-origin: 200px 240px;
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* -------------------------------------------------------------
+   DEFAULT / IDLE STATE (Standing + Breathing + Blinking)
+------------------------------------------------------------- */
+#charBodyGroup {
+    animation: idleBreathe 4s ease-in-out infinite;
+}
+
+/* Blinking Eyes (ScaleY of pupils and eye whites) */
+.left-eye, .right-eye {
+    transform-origin: 165px 175px;
+    animation: eyeBlink 5s infinite;
+}
+.right-eye {
+    transform-origin: 235px 175px;
+}
+
+@keyframes idleBreathe {
+    0%, 100% {
+        transform: translateY(0) scaleY(1);
+    }
+    50% {
+        transform: translateY(-4px) scaleY(1.01);
+    }
+}
+
+@keyframes eyeBlink {
+    0%, 96%, 100% {
+        transform: scaleY(1);
+    }
+    98% {
+        transform: scaleY(0.1);
+    }
+}
+
+/* -------------------------------------------------------------
+   OTUR STATE (Sit Down)
+------------------------------------------------------------- */
+#boyCharacter.state-otur #charBodyGroup {
+    transform: translateY(65px);
+}
+
+#boyCharacter.state-otur #leftLeg {
+    transform: rotate(-65deg) translate(-10px, -15px);
+}
+
+#boyCharacter.state-otur #rightLeg {
+    transform: rotate(65deg) translate(10px, -15px);
+}
+
+#boyCharacter.state-otur #leftArm {
+    transform: rotate(30deg);
+}
+
+#boyCharacter.state-otur #rightArm {
+    transform: rotate(-30deg);
+}
+
+#boyCharacter.state-otur .shadow {
+    transform: scale(1.2);
+    transform-origin: 200px 455px;
+    transition: transform 0.6s ease;
+}
+
+/* -------------------------------------------------------------
+   GƏL STATE (Come Closer / Walk Animation)
+------------------------------------------------------------- */
+#boyCharacter.state-gel {
+    transform: scale(1.25) translateY(20px);
+}
+
+#boyCharacter.state-gel #leftLeg {
+    animation: walkSwingLeft 0.5s linear infinite;
+}
+
+#boyCharacter.state-gel #rightLeg {
+    animation: walkSwingRight 0.5s linear infinite;
+}
+
+#boyCharacter.state-gel #charBodyGroup {
+    animation: walkBob 0.5s ease-in-out infinite;
+}
+
+#boyCharacter.state-gel #leftArm {
+    transform: rotate(25deg);
+}
+
+#boyCharacter.state-gel #rightArm {
+    transform: rotate(-25deg);
+}
+
+/* -------------------------------------------------------------
+   GET STATE (Go Back / Slower Walk Animation)
+------------------------------------------------------------- */
+#boyCharacter.state-get {
+    transform: scale(0.75) translateY(-30px);
+}
+
+#boyCharacter.state-get #leftLeg {
+    animation: walkSwingLeft 0.7s linear infinite;
+}
+
+#boyCharacter.state-get #rightLeg {
+    animation: walkSwingRight 0.7s linear infinite;
+}
+
+#boyCharacter.state-get #charBodyGroup {
+    animation: walkBob 0.7s ease-in-out infinite;
+}
+
+#boyCharacter.state-get #leftArm {
+    transform: rotate(15deg);
+}
+
+#boyCharacter.state-get #rightArm {
+    transform: rotate(-15deg);
+}
+
+/* Walk Sub-Animations */
+@keyframes walkSwingLeft {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(25deg); }
+    75% { transform: rotate(-25deg); }
+}
+
+@keyframes walkSwingRight {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-25deg); }
+    75% { transform: rotate(25deg); }
+}
+
+@keyframes walkBob {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(-1deg); }
+}
+
+/* -------------------------------------------------------------
+   GÜL STATE (Smile / Laugh)
+------------------------------------------------------------- */
+#boyCharacter.state-gul #normalEyes { display: none !important; }
+#boyCharacter.state-gul #happyEyes { display: block !important; }
+#boyCharacter.state-gul #mouthNormal { display: none !important; }
+#boyCharacter.state-gul #mouthLaugh { display: block !important; }
+
+#boyCharacter.state-gul #headGroup {
+    animation: laughShakeHead 0.3s ease-in-out infinite;
+}
+
+#boyCharacter.state-gul #charBodyGroup {
+    animation: laughShakeBody 0.3s ease-in-out infinite;
+}
+
+#boyCharacter.state-gul #leftArm { transform: rotate(45deg); }
+#boyCharacter.state-gul #rightArm { transform: rotate(-45deg); }
+
+@keyframes laughShakeHead {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-3px) rotate(2deg); }
+}
+
+@keyframes laughShakeBody {
+    0%, 100% { transform: translateY(0) scaleY(1); }
+    50% { transform: translateY(-2px) scaleY(1.02); }
+}
+
+/* -------------------------------------------------------------
+   AĞLA STATE (Cry / Teardrops)
+------------------------------------------------------------- */
+#boyCharacter.state-agla #normalEyes { display: none !important; }
+#boyCharacter.state-agla #cryingEyes { display: block !important; }
+#boyCharacter.state-agla #mouthNormal { display: none !important; }
+#boyCharacter.state-agla #mouthCry { display: block !important; }
+#boyCharacter.state-agla #teardrops { display: block !important; }
+
+#boyCharacter.state-agla #headGroup {
+    transform: rotate(5deg) translateY(4px);
+}
+
+#boyCharacter.state-agla #charBodyGroup {
+    animation: crySob 1.5s ease-in-out infinite;
+}
+
+#boyCharacter.state-agla #leftArm {
+    transform: rotate(15deg);
+}
+#boyCharacter.state-agla #rightArm {
+    transform: rotate(-15deg);
+}
+
+/* Tear animations */
+.tear-left, .tear-right {
+    animation: tearFall 1.8s infinite linear;
+}
+.tear-right {
+    animation-delay: 0.9s;
+}
+
+@keyframes crySob {
+    0%, 100% { transform: translateY(0); }
+    40%, 45% { transform: translateY(-4px) scaleY(1.01); }
+    50% { transform: translateY(1px) scaleY(0.99); }
+}
+
+@keyframes tearFall {
+    0% {
+        transform: translateY(0) scale(0.5);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+        transform: translateY(5px) scale(1);
+    }
+    80% {
+        opacity: 1;
+        transform: translateY(55px) scale(0.9);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(65px) scale(0.3);
+    }
+}
+
+/* -------------------------------------------------------------
+   AĞZINI AÇ STATE (Open Mouth)
+------------------------------------------------------------- */
+#boyCharacter.state-agiz-ac #mouthNormal { display: none !important; }
+#boyCharacter.state-agiz-ac #mouthOpen { display: block !important; }
+
+#boyCharacter.state-agiz-ac #headGroup {
+    transform: rotate(-3deg) translateY(-2px);
+}
+
+/* -------------------------------------------------------------
+   QULAQ TUT STATE (Touch Ears)
+------------------------------------------------------------- */
+/* Left hand touches left ear, Right hand touches right ear */
+#boyCharacter.state-qulaq-tut #leftArm {
+    transform: rotate(125deg) translate(8px, -20px);
+}
+
+#boyCharacter.state-qulaq-tut #rightArm {
+    transform: rotate(-125deg) translate(-8px, -20px);
+}
+
+#boyCharacter.state-qulaq-tut #headGroup {
+    animation: headNudge 1.5s ease-in-out infinite;
+}
+
+@keyframes headNudge {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(2deg) scale(1.02); }
+}
+
+/* -------------------------------------------------------------
+   ƏL ÇAL STATE (Clap Hands)
+------------------------------------------------------------- */
+#boyCharacter.state-el-cal #leftArm {
+    animation: clapLeftArm 0.3s ease-in-out infinite;
+}
+
+#boyCharacter.state-el-cal #rightArm {
+    animation: clapRightArm 0.3s ease-in-out infinite;
+}
+
+#boyCharacter.state-el-cal #charBodyGroup {
+    animation: clapBounce 0.6s ease-in-out infinite;
+}
+
+@keyframes clapLeftArm {
+    0%, 100% { transform: rotate(45deg); }
+    50% { transform: rotate(70deg) translate(10px, -5px); }
+}
+
+@keyframes clapRightArm {
+    0%, 100% { transform: rotate(-45deg); }
+    50% { transform: rotate(-70deg) translate(-10px, -5px); }
+}
+
+@keyframes clapBounce {
+    0%, 100% { transform: translateY(0) scaleY(1); }
+    50% { transform: translateY(-5px) scaleY(1.03); }
+}
