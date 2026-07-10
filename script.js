@@ -287,40 +287,29 @@ function stopVisualizer() {
 
 // ─── SPEECH RECOGNITION ───────────────────────────────────
 let lastTriggerTime = 0;
-const TRIGGER_LOCKOUT_MS = 1500; // Ignore new triggers for 1.5s after matching a command
+const TRIGGER_LOCKOUT_MS = 1800;
+// Language fallback: az-AZ → tr-TR (silent, user sees Azerbaijani UI)
+const LANG_CHAIN = ['az-AZ', 'tr-TR'];
+let langIndex = 0;
 
 function tryTriggerAction(command) {
     const now = Date.now();
-    if (now - lastTriggerTime < TRIGGER_LOCKOUT_MS) {
-        return;
-    }
+    if (now - lastTriggerTime < TRIGGER_LOCKOUT_MS) return;
     lastTriggerTime = now;
-    
-    // Clear displayed text immediately
     if (txText) txText.textContent = '';
-    
-    // Execute action
     triggerAction(command);
-
-    // Abort current session to wipe the results buffer clean and start fresh
-    if (recognition && isListening) {
-        try {
-            recognition.abort();
-        } catch (err) {
-            console.warn('Abort failed:', err);
-        }
-    }
+    // NOTE: Do NOT abort() here — let the session end naturally on mobile
 }
 
-function buildRecognition() {
+function buildRecognition(langIdx) {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) return null;
-
     const r = new SR();
-    r.continuous      = true;  // continuous mode for real-time stream matching
-    r.interimResults  = true;  // interimResults true triggers results instantly as spoken
-    r.maxAlternatives = 3;      
-    r.lang            = 'az-AZ';
+    r.continuous      = false; // false = most stable on all mobile browsers
+    r.interimResults  = false; // false = only fire on complete utterance
+    r.maxAlternatives = 3;
+    r.lang            = LANG_CHAIN[langIdx] || 'az-AZ';
+    console.log('[SR] lang =', r.lang);
     return r;
 }
 
@@ -340,64 +329,71 @@ function attachHandlers() {
     };
 
     recognition.onerror = (e) => {
-        console.warn('[Voice] error:', e.error);
-        // 'no-speech' and 'aborted' are non-fatal events (e.g. silence or normal stop/restart restarts), ignore them.
-        if (e.error === 'no-speech' || e.error === 'aborted') return; 
-        
-        let msg = 'Səs tanıma xətası: ' + e.error;
+        console.warn('[SR] error:', e.error);
+
+        // Non-fatal: ignore and let onend handle restart
+        if (e.error === 'no-speech' || e.error === 'aborted') return;
+
         if (e.error === 'not-allowed') {
-            msg = 'Mikrofona icazə rədd edildi! Zəhmət olmasa ayarlardan icazə verin.';
-        } else if (e.error === 'network') {
-            msg = 'İnternet xətası! Səs tanıma üçün aktiv internet lazımdır.';
-        } else if (e.error === 'language-not-supported') {
-            msg = 'Cihazınız Azərbaycan dilində səs tanımayı dəstəkləmir.';
-        } else if (e.error === 'service-not-allowed') {
-            msg = 'Səs xidmətinə icazə verilmir (Ehtimal ki, təhlükəsiz olmayan bağlantı).';
+            stopListening();
+            micStatusLabel.textContent = 'Mikrofona icazə rədd edildi!';
+            micStatusLabel.style.color = 'var(--error)';
+            return;
         }
-        
-        stopListening();
-        micStatusLabel.textContent = msg;
-        micStatusLabel.style.color = 'var(--error)';
+
+        // Language not supported → silently try next language in chain
+        if (e.error === 'language-not-supported' || e.error === 'service-not-allowed') {
+            langIndex = (langIndex + 1) % LANG_CHAIN.length;
+            console.log('[SR] switching lang →', LANG_CHAIN[langIndex]);
+            // Rebuild with next language; onend will restart
+            recognition = buildRecognition(langIndex);
+            if (recognition) attachHandlers();
+            return;
+        }
+
+        // Network or other: show a short warning but keep going
+        console.warn('[SR] non-fatal error, will retry:', e.error);
     };
 
     recognition.onend = () => {
         if (!isListening) return;
-        // Auto-restart after short pause
+        // Wait briefly then restart — simple session-based loop
         setTimeout(() => {
             if (!isListening) return;
-            try { recognition.start(); }
-            catch (err) {
-                console.warn('restart failed:', err);
-                // Rebuild recognition object and try again
-                recognition = buildRecognition();
-                if (recognition) { attachHandlers(); }
-                setTimeout(() => { try { recognition.start(); } catch(_){} }, 400);
+            try {
+                recognition.start();
+            } catch (err) {
+                console.warn('[SR] restart failed, rebuilding:', err);
+                recognition = buildRecognition(langIndex);
+                if (recognition) {
+                    attachHandlers();
+                    setTimeout(() => {
+                        try { recognition.start(); } catch (_) {}
+                    }, 500);
+                }
             }
-        }, 300);
+        }, 500);
     };
 
     recognition.onresult = (e) => {
-        let transcriptTextFound = '';
-        
-        // Loop through all results (both interim and final)
-        for (let i = e.resultIndex; i < e.results.length; i++) {
-            const result = e.results[i];
-            transcriptTextFound = result[0].transcript;
-            
-            // Test alternatives for commands
-            for (let a = 0; a < result.length; a++) {
-                const alt = result[a].transcript;
-                const cmd = matchCommand(alt);
-                if (cmd) {
-                    tryTriggerAction(cmd);
-                    txText.textContent = alt;
-                    return; // Command matched, exit loop
-                }
+        // Only read the latest final result
+        const result = e.results[e.results.length - 1];
+        if (!result) return;
+
+        let matched = false;
+        for (let a = 0; a < result.length; a++) {
+            const alt = result[a].transcript;
+            console.log(`[SR] alt${a}: "${alt}"`);
+            const cmd = matchCommand(alt);
+            if (cmd) {
+                txText.textContent = alt;
+                tryTriggerAction(cmd);
+                matched = true;
+                break;
             }
         }
-        
-        if (transcriptTextFound) {
-            txText.textContent = transcriptTextFound;
+        if (!matched) {
+            txText.textContent = result[0].transcript;
         }
     };
 }
@@ -406,12 +402,12 @@ function startListening() {
     initAudio();
     if (!recognition) return;
     try { recognition.start(); }
-    catch (err) { console.error('start failed:', err); }
+    catch (err) { console.error('[SR] start failed:', err); }
 }
 
 function stopListening() {
     isListening = false;
-    try { if (recognition) recognition.stop(); } catch(_) {}
+    try { if (recognition) recognition.stop(); } catch (_) {}
     btnMic.classList.remove('listening');
     btnMicText.textContent = 'Dinləmə Aktiv';
     micStatusLabel.textContent = 'Dayandı — düyməyə toxunun.';
@@ -429,7 +425,8 @@ btnOverlay.addEventListener('click', () => {
     setTimeout(() => overlay.style.display = 'none', 500);
 
     initAudio();
-    recognition = buildRecognition();
+    langIndex = 0;
+    recognition = buildRecognition(langIndex);
     if (!recognition) {
         micStatusLabel.textContent = 'Brauzeriniz səs tanımanı dəstəkləmir.';
         return;
@@ -448,8 +445,9 @@ cmdBtns.forEach(btn => {
     btn.addEventListener('click', () => triggerAction(btn.dataset.command));
 });
 
-// Setup on load (don't start yet — wait for overlay tap)
+// Setup on load
 window.addEventListener('DOMContentLoaded', () => {
-    recognition = buildRecognition();
+    recognition = buildRecognition(langIndex);
     if (recognition) attachHandlers();
 });
+
