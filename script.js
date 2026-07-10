@@ -309,7 +309,8 @@ function attachHandlers() {
 
     recognition.onerror = (e) => {
         console.warn('[Voice] error:', e.error);
-        if (e.error === 'no-speech') return; // silence - keep going
+        // 'no-speech' and 'aborted' are non-fatal events (e.g. silence or normal stop/restart restarts), ignore them.
+        if (e.error === 'no-speech' || e.error === 'aborted') return; 
         
         let msg = 'Səs tanıma xətası: ' + e.error;
         if (e.error === 'not-allowed') {
