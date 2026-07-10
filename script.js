@@ -192,6 +192,7 @@ function resetToIdle() {
     updateFace('idle');
     cmdBtns.forEach(b => b.classList.remove('active-command'));
     speechBubble.textContent = 'Növbəti əmrini gözləyirəm! 😊';
+    if (txText) txText.textContent = ''; // Clear text from the UI after action ends
 }
 
 function triggerAction(name) {
@@ -232,18 +233,35 @@ function matchCommand(raw) {
         .trim();
 
     console.log('[Voice] heard:', t);
-    // Show in transcript box even before matching
-    txText.textContent = raw;
 
-    if (/otur|əyləş|çök|cök/.test(t))                          return 'otur';
-    if (/\bdur\b|ayağa|qalx/.test(t))                           return 'dur';
-    if (/\bgəl\b|\bgel\b|yaxınlaş/.test(t))                     return 'gel';
-    if (/\bget\b|uzaqlaş/.test(t))                              return 'get';
-    if (/gül|gul|güldü|güldür|gülümsə/.test(t))                return 'gul';
-    if (/ağla|agla|ağladı|ağlama|ağlamaq/.test(t))             return 'agla';
-    if (/ağzını|agzini|ağzı|agzi|\baç\b|\bac\b/.test(t))       return 'agiz-ac';
-    if (/qulaq|qulag|\btut\b/.test(t))                          return 'qulaq-tut';
-    if (/əl çal|el cal|əlçal|elcal|\bçal\b|\bcal\b|alqış/.test(t)) return 'el-cal';
+    // Strict Azerbaijani commands only (using word boundaries \b to prevent mixing)
+    if (/\botur\b|\bəyləş\b|\bçök\b|\bcök\b/.test(t)) {
+        return 'otur';
+    }
+    if (/\bdur\b|\bayağa\b|\bayaqa\b|\bqalx\b/.test(t)) {
+        return 'dur';
+    }
+    if (/\bgəl\b|\bgel\b|\byaxınlaş\b/.test(t)) {
+        return 'gel';
+    }
+    if (/\bget\b|\buzaqlaş\b/.test(t)) {
+        return 'get';
+    }
+    if (/\bgül\b|\bgul\b|\bgülümsə\b/.test(t)) {
+        return 'gul';
+    }
+    if (/\bağla\b|\bagla\b|\bağlamaq\b/.test(t)) {
+        return 'agla';
+    }
+    if (/\bağzını\s+aç\b|\bagzini\s+ac\b|\bağzı\s+aç\b|\bagzi\s+ac\b|\baç\b|\bac\b/.test(t)) {
+        return 'agiz-ac';
+    }
+    if (/\bqulağını\s+tut\b|\bqulagini\s+tut\b|\bqulaq\s+tut\b/.test(t)) {
+        return 'qulaq-tut';
+    }
+    if (/\bəl\s+çal\b|\bel\s+cal\b|\bəlçal\b|\belcal\b|\balqış\b/.test(t)) {
+        return 'el-cal';
+    }
 
     return null; // unrecognized
 }
@@ -277,7 +295,21 @@ function tryTriggerAction(command) {
         return;
     }
     lastTriggerTime = now;
+    
+    // Clear displayed text immediately
+    if (txText) txText.textContent = '';
+    
+    // Execute action
     triggerAction(command);
+
+    // Abort current session to wipe the results buffer clean and start fresh
+    if (recognition && isListening) {
+        try {
+            recognition.abort();
+        } catch (err) {
+            console.warn('Abort failed:', err);
+        }
+    }
 }
 
 function buildRecognition() {
