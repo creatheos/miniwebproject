@@ -350,7 +350,9 @@ function triggerAction(actionName) {
 
 // Command Parsing Logic (Azerbaijani Matcher)
 function parseVoiceCommand(transcript) {
-    const text = transcript.toLowerCase().trim();
+    // Convert to lowercase, trim and strip standard punctuation (.,?! etc.)
+    let text = transcript.toLowerCase().trim();
+    text = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "");
     console.log("Parsing voice transcript:", text);
 
     if (text.includes("otur") || text.includes("əyləş") || text.includes("cök") || text.includes("çök") || text.includes("oturasan")) {
